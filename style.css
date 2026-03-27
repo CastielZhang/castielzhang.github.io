@@ -9,9 +9,9 @@
     --accent2: #a78bfa;
     --accent3: #34d399;
     --text: #e8edf2;
-    --muted: #7a8899;
-    --mono: 'Space Mono', monospace;
-    --sans: 'Syne', sans-serif;
+    --muted: #a8bccf;
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'Inter', sans-serif;
 }
 
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -20,7 +20,7 @@ body {
     background: var(--bg);
     color: var(--text);
     font-family: var(--sans);
-    font-size: 16px;
+    font-size: 17px;
     line-height: 1.7;
     overflow-x: hidden;
 }
@@ -72,13 +72,23 @@ nav {
 section {
     position: relative;
     z-index: 1;
-    max-width: 900px;
+    max-width: 1200px;
     margin: 0 auto;
-    padding: 6rem 2rem;
+    padding: 4rem 2rem;
 }
 section:first-of-type { padding-top: 10rem; }
 
 /* ── HERO ── */
+.hero-bottom {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1.5rem;
+    margin-top: 2rem;
+}
+.hero-cta {
+    align-self: flex-end;
+}
 .hero-eyebrow {
     font-family: var(--mono);
     font-size: 12px;
@@ -89,9 +99,9 @@ section:first-of-type { padding-top: 10rem; }
 .hero-name {
     font-size: clamp(3rem, 8vw, 6rem);
     font-weight: 800;
-    line-height: 1.0;
+    line-height: 1.05;
     letter-spacing: -0.03em;
-    margin-bottom: 1rem;
+    margin-bottom: 2rem;
 }
 .hero-name span {
     background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 60%);
@@ -103,14 +113,12 @@ section:first-of-type { padding-top: 10rem; }
     font-size: 14px;
     color: var(--muted);
     letter-spacing: 0.05em;
-    margin-bottom: 2rem;
+    margin-bottom: 2.5rem;
 }
 .hero-desc {
-    font-size: 17px;
+    font-size: 25px;
     color: var(--muted);
-    max-width: 560px;
     line-height: 1.8;
-    margin-bottom: 2.5rem;
 }
 .hero-cta {
     display: inline-flex;
@@ -131,7 +139,7 @@ section:first-of-type { padding-top: 10rem; }
 /* ── SECTION HEADING ── */
 .section-label {
     font-family: var(--mono);
-    font-size: 11px;
+    font-size: 15px;
     color: var(--accent);
     letter-spacing: 0.2em;
     text-transform: uppercase;
@@ -151,7 +159,7 @@ section:first-of-type { padding-top: 10rem; }
     gap: 3rem;
     align-items: start;
 }
-.about-text { font-size: 15px; color: var(--muted); line-height: 1.9; }
+.about-text { font-size: 18px; color: var(--muted); line-height: 1.9; }
 .about-text p { margin-bottom: 1rem; }
 .about-stats {
     display: grid;
@@ -167,7 +175,7 @@ section:first-of-type { padding-top: 10rem; }
     padding: 1.4rem;
 }
 .stat-num {
-    font-size: 2rem;
+    font-size: 3rem;
     font-weight: 800;
     color: var(--accent);
     line-height: 1;
@@ -175,7 +183,7 @@ section:first-of-type { padding-top: 10rem; }
 }
 .stat-label {
     font-family: var(--mono);
-    font-size: 11px;
+    font-size: 15px;
     color: var(--muted);
     letter-spacing: 0.08em;
 }
@@ -192,13 +200,13 @@ section:first-of-type { padding-top: 10rem; }
     margin-bottom: 0;
 }
 .company-name {
-    font-size: 1rem;
+    font-size: 1.5rem;
     font-weight: 800;
     letter-spacing: -0.01em;
 }
 .company-tenure {
     font-family: var(--mono);
-    font-size: 11px;
+    font-size: 18px;
     color: var(--muted);
     letter-spacing: 0.06em;
 }
@@ -221,7 +229,7 @@ section:first-of-type { padding-top: 10rem; }
 }
 .timeline-date {
     font-family: var(--mono);
-    font-size: 11px;
+    font-size: 18px;
     color: var(--muted);
     letter-spacing: 0.06em;
     padding: 2rem 0;
@@ -245,9 +253,17 @@ section:first-of-type { padding-top: 10rem; }
     transform: translateX(-3px);
 }
 .exp-role {
-    font-size: 1.1rem;
-    font-weight: 600;
+    font-size: 1.5rem;
+    font-weight: 800;
     margin-bottom: 1rem;
+}
+.exp-summary {
+    font-size: 16px;
+    color: var(--text);
+    line-height: 1.6;
+    margin-bottom: 1rem;
+    padding-left: 0.9rem;
+    border-left: 2px solid var(--accent);
 }
 .exp-tags {
     display: flex; flex-wrap: wrap; gap: 0.4rem;
@@ -255,10 +271,10 @@ section:first-of-type { padding-top: 10rem; }
 }
 .tag {
     font-family: var(--mono);
-    font-size: 10px;
+    font-size: 15px;
     letter-spacing: 0.06em;
     padding: 0.25rem 0.6rem;
-    border-radius: 2px;
+    border-radius: 8px;
     border: 1px solid;
 }
 .tag-blue  { color: var(--accent);  border-color: rgba(99,202,255,0.3);  background: rgba(99,202,255,0.05); }
@@ -266,7 +282,7 @@ section:first-of-type { padding-top: 10rem; }
 .tag-green { color: var(--accent3); border-color: rgba(52,211,153,0.3);  background: rgba(52,211,153,0.05); }
 .exp-bullets { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
 .exp-bullets li {
-    font-size: 14px;
+    font-size: 20px;
     color: var(--muted);
     padding-left: 1rem;
     position: relative;
@@ -295,7 +311,7 @@ section:first-of-type { padding-top: 10rem; }
 }
 .skill-group-title {
     font-family: var(--mono);
-    font-size: 10px;
+    font-size: 20px;
     letter-spacing: 0.15em;
     color: var(--accent);
     margin-bottom: 1rem;
@@ -303,7 +319,7 @@ section:first-of-type { padding-top: 10rem; }
 }
 .skill-list { list-style: none; display: flex; flex-direction: column; gap: 0.45rem; }
 .skill-list li {
-    font-size: 13px;
+    font-size: 18px;
     color: var(--muted);
     display: flex;
     align-items: center;
@@ -329,11 +345,11 @@ section:first-of-type { padding-top: 10rem; }
     align-items: flex-start;
     gap: 2rem;
 }
-.contact-desc { font-size: 15px; color: var(--muted); max-width: 480px; line-height: 1.8; }
+.contact-desc { font-size: 20px; color: var(--muted); max-width: 480px; line-height: 1.8; }
 .contact-links { display: flex; gap: 1rem; flex-wrap: wrap; }
 .contact-link {
     font-family: var(--mono);
-    font-size: 12px;
+    font-size: 18px;
     letter-spacing: 0.08em;
     color: var(--text);
     border: 1px solid var(--border);
@@ -370,6 +386,7 @@ footer {
 @media (max-width: 680px) {
     nav { padding: 1rem 1.5rem; }
     .nav-links { gap: 1.2rem; }
+    .hero-bottom { flex-direction: column; align-items: flex-start; }
     .about-grid { grid-template-columns: 1fr; }
     .timeline-item { grid-template-columns: 1fr; }
     .timeline-item::before { display: none; }

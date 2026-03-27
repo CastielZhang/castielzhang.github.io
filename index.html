@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Castiel Zhang — Software Developer</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -24,14 +24,16 @@
 <!-- HERO -->
 <section id="home">
     <p class="hero-eyebrow fade-in">// SOFTWARE DEVELOPER · SYDNEY, AU</p>
-    <h1 class="hero-name fade-in">Castiel<br/><span>Zhang</span></h1>
+    <h1 class="hero-name fade-in">Castiel <span>Zhang</span></h1>
     <p class="hero-title fade-in">Full-Stack · Linux Development · Systems Engineering · Hardware</p>
-    <p class="hero-desc fade-in">
-        Software developer at UTS Rapido — building hardware-level data-erasure
-        systems, AI-powered data pipelines, and full-stack engineering tools
-        across Linux and embedded platforms.
-    </p>
-    <a class="hero-cta fade-in" href="#experience">View Experience →</a>
+    <div class="hero-bottom fade-in">
+        <p class="hero-desc">
+            Software developer at UTS Rapido — building hardware-level data-erasure
+            systems, AI-powered data pipelines, and full-stack engineering tools
+            across Linux and embedded platforms.
+        </p>
+        <a class="hero-cta" href="#experience">View Experience →</a>
+    </div>
 </section>
 
 <!-- ABOUT -->
@@ -45,9 +47,11 @@
                 University of Technology Sydney within a department called <a href="https://www.uts.edu.au/about/faculties/engineering-and-information-technology/partner-us/rapido" target="_blank" style="color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(99,202,255,0.3);">Rapido</a>.
             </p>
             <p>
-                My work spans hardware-level data-erasure software, defence-adjacent
-                AI data pipelines, and enterprise CRM systems — each demanding
-                precision, adaptability, and fast self-directed learning.
+                My strengths lie in full-stack web development, frontend UX design,
+                and Linux-based software development — spanning everything from
+                low-level systems work to hands-on hardware installation and maintenance.
+                I bring AI integration into projects where it adds real value — making
+                systems more intelligent and workflows more efficient.
             </p>
             <p>
                 I thrive at the boundary between systems engineering and product
@@ -57,7 +61,7 @@
         </div>
         <div class="about-stats">
             <div class="stat-cell">
-                <div class="stat-num">3+</div>
+                <div class="stat-num">4</div>
                 <div class="stat-label">Years at UTS</div>
             </div>
             <div class="stat-cell">
@@ -93,6 +97,7 @@
             <div class="timeline-date">Aug 2024 —<br/>Dec 2025</div>
             <div class="timeline-content">
                 <p class="exp-role">DSI Project — AI-Powered Data Intelligence Platform</p>
+                <p class="exp-summary">Research collaboration with UTS building an end-to-end pipeline that scrapes social media at scale, analyses discourse trends, and republishes AI-tagged content to a third-party platform.</p>
                 <div class="exp-tags">
                     <span class="tag tag-purple">TypeScript</span>
                     <span class="tag tag-blue">Web Scraping</span>
@@ -113,6 +118,7 @@
             <div class="timeline-date">Jul 2024 —<br/>Mar 2025</div>
             <div class="timeline-content">
                 <p class="exp-role">WV-Tech Phase 2 — GPU Memory Erasure & Integration</p>
+                <p class="exp-summary">Extended the data-wiping platform with NVIDIA VRAM erasure, embedding custom GPU drivers into a bootable ISO and validating against IEEE data-erasure standards with external certification partner Viden.</p>
                 <div class="exp-tags">
                     <span class="tag tag-blue">NVIDIA / CUDA</span>
                     <span class="tag tag-purple">Custom ISO</span>
@@ -132,6 +138,7 @@
             <div class="timeline-date">2024 —<br/>Ongoing</div>
             <div class="timeline-content">
                 <p class="exp-role">Salesforce Developer & Administrator</p>
+                <p class="exp-summary">CRM development and administration for UTS Rapido's internal operations — building Apex automations, LWC components, and data integrity systems to support cross-team reporting.</p>
                 <div class="exp-tags">
                     <span class="tag tag-blue">Apex</span>
                     <span class="tag tag-purple">LWC</span>
@@ -151,6 +158,7 @@
             <div class="timeline-date">Sep 2023 —<br/>Dec 2023</div>
             <div class="timeline-content">
                 <p class="exp-role">UTS Working Planning Tool</p>
+                <p class="exp-summary">Internal staff planning web app built from scratch in React and TypeScript, self-directed into an entirely unfamiliar stack and delivered on schedule.</p>
                 <div class="exp-tags">
                     <span class="tag tag-purple">React</span>
                     <span class="tag tag-blue">TypeScript</span>
@@ -169,6 +177,7 @@
             <div class="timeline-date">Mar 2023 —<br/>Ongoing</div>
             <div class="timeline-content">
                 <p class="exp-role">WV-Tech — Comprehensive Data Wiping Software</p>
+                <p class="exp-summary">Cross-platform desktop application for secure hardware data erasure, combining an Electron/React frontend with a Bash backend for BIOS interrogation, hardware reporting, and automated PDF output.</p>
                 <div class="exp-tags">
                     <span class="tag tag-blue">Electron</span>
                     <span class="tag tag-purple">React</span>
@@ -189,6 +198,7 @@
             <div class="timeline-date">Feb 2023 —<br/>Ongoing</div>
             <div class="timeline-content">
                 <p class="exp-role">Quantum Project — Embedded OS & Dev Environment</p>
+                <p class="exp-summary">Set up embedded Linux environments on single-board computers (Banana Pi, Raspberry Pi, Radxa CM3) for client TheQ, flashing custom OS images and containerising the development workflow with Docker.</p>
                 <div class="exp-tags">
                     <span class="tag tag-blue">Banana Pi / Raspberry Pi</span>
                     <span class="tag tag-purple">Docker</span>
@@ -207,6 +217,7 @@
             <div class="timeline-date">Sep 2022 —<br/>Jan 2023</div>
             <div class="timeline-content">
                 <p class="exp-role">Junior Software Engineer</p>
+                <p class="exp-summary">Built a distributed processing system over a LAN bridge between a master and worker nodes — tasks are split on the master, automatically distributed to workers via Python Celery, and results merged once all jobs complete. Includes custom system service monitoring across the cluster.</p>
                 <div class="exp-tags">
                     <span class="tag tag-blue">Linux</span>
                     <span class="tag tag-purple">Python</span>
@@ -222,6 +233,7 @@
             <div class="timeline-date">Apr 2022 —<br/>Aug 2022</div>
             <div class="timeline-content">
                 <p class="exp-role">Software Engineer Intern — Navantia Digital Twin</p>
+                <p class="exp-summary">Internship on a defence maritime digital twin project, contributing to architecture simulation for the overall system model.</p>
                 <div class="exp-tags">
                     <span class="tag tag-blue">Architecture Simulation</span>
                     <span class="tag tag-purple">Digital Twin</span>
