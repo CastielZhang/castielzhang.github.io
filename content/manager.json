@@ -1,0 +1,39 @@
+{
+  "sections": [
+    {
+      "id": "about",
+      "file": "sections/About-content.json",
+      "title": "Who I Am",
+      "nav": "About",
+      "pdf": true
+    },
+    {
+      "id": "skills",
+      "file": "sections/TechnicalStack-content.json",
+      "title": "Technical Stack",
+      "nav": "Skills",
+      "pdf": true
+    },
+    {
+      "id": "experience",
+      "file": "sections/Experience-content.json",
+      "title": "What I've Built",
+      "nav": "Experience",
+      "pdf": true
+    },
+    {
+      "id": "education",
+      "file": "sections/Education-content.json",
+      "title": "Where I Studied",
+      "nav": "Education",
+      "pdf": true
+    },
+    {
+      "id": "contact",
+      "file": "sections/Contact-content.json",
+      "title": "Get In Touch",
+      "nav": "Contact",
+      "pdf": false
+    }
+  ]
+}

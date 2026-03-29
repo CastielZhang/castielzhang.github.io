@@ -1,0 +1,21 @@
+{
+  "institution": {
+    "name": "University of Technology Sydney",
+    "tenure": "2019 — 2022"
+  },
+  "items": [
+    {
+      "date": "2019 — 2022",
+      "role": "Bachelor of Software Engineering (Honours)",
+      "tags": [
+        { "text": "Distinction",   "color": "blue"   },
+        { "text": "Honours",       "color": "purple" },
+        { "text": "BCI Research",  "color": "green"  }
+      ],
+      "bullets": [
+        "Honours project: Brain-Computer Interface (BCI) for Augmented Human Performance — Project SPR-22-09555.",
+        "Researched and developed BCI systems aimed at enhancing human cognitive and physical performance through neural signal processing."
+      ]
+    }
+  ]
+}

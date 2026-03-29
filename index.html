@@ -12,345 +12,208 @@
 
 <nav>
     <span class="nav-logo">CZ.DEV</span>
-    <ul class="nav-links">
-        <li><a href="#about">About</a></li>
-        <li><a href="#skills">Skills</a></li>
-        <li><a href="#experience">Experience</a></li>
-        <li><a href="#education">Education</a></li>
-        <li><a href="#contact">Contact</a></li>
-    </ul>
+    <ul class="nav-links" id="nav-links"></ul>
 </nav>
 
-<!-- HERO -->
-<section id="home">
-    <p class="hero-eyebrow fade-in">// SOFTWARE DEVELOPER · SYDNEY, AU</p>
-    <h1 class="hero-name fade-in">Castiel <span>Zhang</span></h1>
-    <p class="hero-title fade-in">Full-Stack · Linux Development · Systems Engineering · Hardware</p>
-    <div class="hero-bottom fade-in">
-        <p class="hero-desc">
-            Software developer at UTS Rapido — building hardware-level data-erasure
-            systems, AI-powered data pipelines, and full-stack engineering tools
-            across Linux and embedded platforms.
-        </p>
-        <a class="hero-cta" href="#experience">View Experience →</a>
-    </div>
-</section>
+<section id="home"></section>
 
-<!-- ABOUT -->
-<section id="about">
-    <p class="section-label fade-in">// 01. ABOUT</p>
-    <h2 class="section-title fade-in">Who I Am</h2>
-    <div class="about-grid fade-in">
-        <div class="about-text">
-            <p>
-                I'm a software developer based in Sydney, currently working at the
-                University of Technology Sydney within a department called <a href="https://www.uts.edu.au/about/faculties/engineering-and-information-technology/partner-us/rapido" target="_blank" style="color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(99,202,255,0.3);">Rapido</a>.
-            </p>
-            <p>
-                My strengths lie in full-stack web development, frontend UX design,
-                and Linux-based software development — spanning everything from
-                low-level systems work to hands-on hardware installation and maintenance.
-                I bring AI integration into projects where it adds real value — making
-                systems more intelligent and workflows more efficient.
-            </p>
-            <p>
-                I thrive at the boundary between systems engineering and product
-                delivery, often stepping into technical leadership when projects
-                need direction.
-            </p>
-        </div>
-        <div class="about-stats">
-            <div class="stat-cell">
-                <div class="stat-num">4</div>
-                <div class="stat-label">Years at UTS</div>
-            </div>
-            <div class="stat-cell">
-                <div class="stat-num">6+</div>
-                <div class="stat-label">Major Projects</div>
-            </div>
-            <div class="stat-cell">
-                <div class="stat-num">2</div>
-                <div class="stat-label">Research Collabs</div>
-            </div>
-            <div class="stat-cell">
-                <div class="stat-num">∞</div>
-                <div class="stat-label">Coffee Consumed</div>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- SKILLS -->
-<section id="skills">
-    <p class="section-label fade-in">// 02. SKILLS</p>
-    <h2 class="section-title fade-in">Technical Stack</h2>
-    <div class="skills-grid fade-in">
-        <div class="skill-group">
-            <p class="skill-group-title">Languages</p>
-            <ul class="skill-list">
-                <li>TypeScript / JavaScript</li>
-                <li>Apex (Salesforce)</li>
-                <li>Bash / Shell</li>
-                <li>Python</li>
-                <li>HTML / CSS</li>
-            </ul>
-        </div>
-        <div class="skill-group">
-            <p class="skill-group-title">Frameworks & Tools</p>
-            <ul class="skill-list">
-                <li>React / Electron</li>
-                <li>Lightning Web Components</li>
-                <li>Salesforce Flows</li>
-                <li>Node.js</li>
-                <li>Git / GitHub</li>
-            </ul>
-        </div>
-        <div class="skill-group">
-            <p class="skill-group-title">Platforms & Systems</p>
-            <ul class="skill-list">
-                <li>Salesforce CRM</li>
-                <li>Linux / Ubuntu</li>
-                <li>NVIDIA / CUDA</li>
-                <li>Custom ISO / BIOS</li>
-                <li>Data Pipelines / AI</li>
-            </ul>
-        </div>
-    </div>
-</section>
-
-<!-- EXPERIENCE -->
-<section id="experience">
-    <p class="section-label fade-in">// 03. EXPERIENCE</p>
-    <h2 class="section-title fade-in">What I've Built</h2>
-
-    <div class="company-header fade-in">
-        <span class="company-name">UTS Rapido</span>
-        <span class="company-tenure">Apr 2022 — Present · 4 yrs · Sydney, AU</span>
-    </div>
-
-    <div class="timeline">
-
-        <!-- DSI -->
-        <div class="timeline-item fade-in">
-            <div class="timeline-date">Aug 2024 —<br/>Dec 2025</div>
-            <div class="timeline-content">
-                <p class="exp-role">DSI Project — AI-Powered Data Intelligence Platform</p>
-                <p class="exp-summary">Research collaboration with UTS building an end-to-end pipeline that scrapes social media at scale, analyses discourse trends, and republishes AI-tagged content to a third-party platform.</p>
-                <div class="exp-tags">
-                    <span class="tag tag-purple">TypeScript</span>
-                    <span class="tag tag-blue">Web Scraping</span>
-                    <span class="tag tag-green">AI / NLP</span>
-                    <span class="tag tag-blue">Data Pipelines</span>
-                </div>
-                <ul class="exp-bullets">
-                    <li>In collaboration with Prof. Marian Andrei Rizoiu, UTS.</li>
-                    <li>Developed and maintained scrapers targeting major social media platforms to extract content signals, trending keywords, and engagement metrics at scale.</li>
-                    <li>Aggregated and analysed topic trends over time to surface insights into evolving discourse patterns.</li>
-                    <li>Phase 2: integrated with a third-party publishing platform to automate an end-to-end pipeline — ingesting native data, applying AI-driven tagging and categorisation, and republishing enriched content programmatically.</li>
-                </ul>
-            </div>
-        </div>
-
-        <!-- WV-Tech Phase 2 -->
-        <div class="timeline-item fade-in">
-            <div class="timeline-date">Jul 2024 —<br/>Mar 2025</div>
-            <div class="timeline-content">
-                <p class="exp-role">WV-Tech Phase 2 — GPU Memory Erasure & Integration</p>
-                <p class="exp-summary">Extended the data-wiping platform with NVIDIA VRAM erasure, embedding custom GPU drivers into a bootable ISO and validating against IEEE data-erasure standards with external certification partner Viden.</p>
-                <div class="exp-tags">
-                    <span class="tag tag-blue">NVIDIA / CUDA</span>
-                    <span class="tag tag-purple">Custom ISO</span>
-                    <span class="tag tag-green">IEEE Standards</span>
-                    <span class="tag tag-blue">Bash / Linux</span>
-                </div>
-                <ul class="exp-bullets">
-                    <li>Researched and implemented VRAM read/write erasure for NVIDIA graphics cards, with dynamic adaptation across different GPU and motherboard vendors.</li>
-                    <li>Embedded pre-configured GPU drivers directly into a custom ISO image for seamless deployment across target hardware environments.</li>
-                    <li>Liaised with external partner Viden — provided technical support for performance testing, IEEE data-erasure standard validation, and formal certification verification.</li>
-                </ul>
-            </div>
-        </div>
-
-        <!-- Salesforce -->
-        <div class="timeline-item fade-in">
-            <div class="timeline-date">2024 —<br/>Ongoing</div>
-            <div class="timeline-content">
-                <p class="exp-role">Salesforce Developer & Administrator</p>
-                <p class="exp-summary">CRM development and administration for UTS Rapido's internal operations — building Apex automations, LWC components, and data integrity systems to support cross-team reporting.</p>
-                <div class="exp-tags">
-                    <span class="tag tag-blue">Apex</span>
-                    <span class="tag tag-purple">LWC</span>
-                    <span class="tag tag-green">Flows</span>
-                    <span class="tag tag-blue">Reports & Dashboards</span>
-                </div>
-                <ul class="exp-bullets">
-                    <li>Implemented bidirectional Grant Type field synchronisation between Opportunity and Campaign objects using Record-Triggered Flows and Global Value Sets.</li>
-                    <li>Built Campaign-Opportunity data integrity systems and resolved relationship issues affecting cross-team reporting pipelines.</li>
-                    <li>Configured SDG multi-select picklist integration, ANZSIC classification fields, and role hierarchy access controls.</li>
-                </ul>
-            </div>
-        </div>
-
-        <!-- UTS Working Planning Tool -->
-        <div class="timeline-item fade-in">
-            <div class="timeline-date">Sep 2023 —<br/>Dec 2023</div>
-            <div class="timeline-content">
-                <p class="exp-role">UTS Working Planning Tool</p>
-                <p class="exp-summary">Internal staff planning web app built from scratch in React and TypeScript, self-directed into an entirely unfamiliar stack and delivered on schedule.</p>
-                <div class="exp-tags">
-                    <span class="tag tag-purple">React</span>
-                    <span class="tag tag-blue">TypeScript</span>
-                    <span class="tag tag-green">Responsive UI</span>
-                </div>
-                <ul class="exp-bullets">
-                    <li>Self-directed into web development with no prior experience — spearheaded the build using React and TypeScript from scratch.</li>
-                    <li>Mastered React routing, providers, and component architecture; designed responsive layouts for cross-device compatibility.</li>
-                    <li>Delivered a robust, comprehensive planning tool on schedule despite an entirely unfamiliar stack.</li>
-                </ul>
-            </div>
-        </div>
-
-        <!-- WV-Tech Phase 1 -->
-        <div class="timeline-item fade-in">
-            <div class="timeline-date">Mar 2023 —<br/>Ongoing</div>
-            <div class="timeline-content">
-                <p class="exp-role">WV-Tech — Comprehensive Data Wiping Software</p>
-                <p class="exp-summary">Cross-platform desktop application for secure hardware data erasure, combining an Electron/React frontend with a Bash backend for BIOS interrogation, hardware reporting, and automated PDF output.</p>
-                <div class="exp-tags">
-                    <span class="tag tag-blue">Electron</span>
-                    <span class="tag tag-purple">React</span>
-                    <span class="tag tag-green">Bash</span>
-                    <span class="tag tag-blue">PDF Reporting</span>
-                </div>
-                <ul class="exp-bullets">
-                    <li>Led project direction in sync with client needs; guided team to ensure timely milestone delivery.</li>
-                    <li>Built a secure data-wiping backend including BIOS interrogation and battery reporting capabilities.</li>
-                    <li>Designed an intuitive Electron React interface communicating fluidly with the bash backend.</li>
-                    <li>Enabled auto-generation of detailed hardware reports with consolidated PDF output and asset tag removal.</li>
-                </ul>
-            </div>
-        </div>
-
-        <!-- Quantum Project -->
-        <div class="timeline-item fade-in">
-            <div class="timeline-date">Feb 2023 —<br/>Ongoing</div>
-            <div class="timeline-content">
-                <p class="exp-role">Quantum Project — Embedded OS & Dev Environment</p>
-                <p class="exp-summary">Set up embedded Linux environments on single-board computers (Banana Pi, Raspberry Pi, Radxa CM3) for client TheQ, flashing custom OS images and containerising the development workflow with Docker.</p>
-                <div class="exp-tags">
-                    <span class="tag tag-blue">Banana Pi / Raspberry Pi</span>
-                    <span class="tag tag-purple">Docker</span>
-                    <span class="tag tag-green">Ubuntu</span>
-                    <span class="tag tag-blue">Radxa CM3</span>
-                </div>
-                <ul class="exp-bullets">
-                    <li>Client: TheQ. Utilised Banana Pi, Raspberry Pi, and Radxa CM3 chips to flash Ubuntu OS images, enhancing chip functionality.</li>
-                    <li>Established a productive development environment using Docker for streamlined project development and deployment.</li>
-                </ul>
-            </div>
-        </div>
-
-        <!-- Junior Software Engineer -->
-        <div class="timeline-item fade-in">
-            <div class="timeline-date">Sep 2022 —<br/>Jan 2023</div>
-            <div class="timeline-content">
-                <p class="exp-role">Junior Software Engineer</p>
-                <p class="exp-summary">Built a distributed processing system over a LAN bridge between a master and worker nodes — tasks are split on the master, automatically distributed to workers via Python Celery, and results merged once all jobs complete. Includes custom system service monitoring across the cluster.</p>
-                <div class="exp-tags">
-                    <span class="tag tag-blue">Linux</span>
-                    <span class="tag tag-purple">Python</span>
-                </div>
-                <ul class="exp-bullets">
-                    <li>Contract role contributing to internal software projects across Linux and Python-based tooling.</li>
-                </ul>
-            </div>
-        </div>
-
-        <!-- Intern - Navantia -->
-        <div class="timeline-item fade-in">
-            <div class="timeline-date">Apr 2022 —<br/>Aug 2022</div>
-            <div class="timeline-content">
-                <p class="exp-role">Software Engineer Intern — Navantia Digital Twin</p>
-                <p class="exp-summary">Internship on a defence maritime digital twin project, contributing to architecture simulation for the overall system model.</p>
-                <div class="exp-tags">
-                    <span class="tag tag-blue">Architecture Simulation</span>
-                    <span class="tag tag-purple">Digital Twin</span>
-                </div>
-                <ul class="exp-bullets">
-                    <li>Involved in the Navantia Digital Twin project, contributing to architecture simulation for the overall system.</li>
-                </ul>
-            </div>
-        </div>
-
-    </div>
-</section>
-
-<!-- EDUCATION -->
-<section id="education">
-    <p class="section-label fade-in">// 04. EDUCATION</p>
-    <h2 class="section-title fade-in">Where I Studied</h2>
-
-    <div class="company-header fade-in">
-        <span class="company-name">University of Technology Sydney</span>
-        <span class="company-tenure">2019 — 2022</span>
-    </div>
-
-    <div class="timeline">
-        <div class="timeline-item fade-in">
-            <div class="timeline-date">2019 —<br/>2022</div>
-            <div class="timeline-content">
-                <p class="exp-role">Bachelor of Software Engineering (Honours)</p>
-                <div class="exp-tags">
-                    <span class="tag tag-blue">Distinction</span>
-                    <span class="tag tag-purple">Honours</span>
-                    <span class="tag tag-green">BCI Research</span>
-                </div>
-                <ul class="exp-bullets">
-                    <li>Honours project: Brain-Computer Interface (BCI) for Augmented Human Performance — Project SPR-22-09555.</li>
-                    <li>Researched and developed BCI systems aimed at enhancing human cognitive and physical performance through neural signal processing.</li>
-                </ul>
-            </div>
-        </div>
-    </div>
-</section>
-
-<!-- SKILLS -->
-<section id="skills">
-<!-- CONTACT -->
-<section id="contact">
-    <p class="section-label fade-in">// 05. CONTACT</p>
-    <h2 class="section-title fade-in">Get In Touch</h2>
-    <div class="contact-inner fade-in">
-        <p class="contact-desc">
-            Open to conversations about interesting projects, collaborations, or
-            opportunities. Reach out via LinkedIn or GitHub.
-        </p>
-        <div class="contact-links">
-            <a class="contact-link" href="https://www.linkedin.com/in/castiel-zhang-12433a114/" target="_blank">
-                ↗ LinkedIn
-            </a>
-            <a class="contact-link" href="https://github.com/castielzhang" target="_blank">
-                ↗ GitHub
-            </a>
-        </div>
-    </div>
-</section>
+<div id="sections-container"></div>
 
 <footer>
     <span>© 2025 Castiel Zhang · Built with HTML/CSS/JS · Hosted on GitHub Pages</span>
 </footer>
 
 <script>
-    const els = document.querySelectorAll('.fade-in');
+const esc = s => String(s)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;');
+
+// ── Nav ──────────────────────────────────────────────────────────────────────
+
+function renderNav(sections) {
+    document.getElementById('nav-links').innerHTML = sections
+        .map(s => `<li><a href="#${s.id}">${esc(s.nav)}</a></li>`)
+        .join('');
+}
+
+// ── Hero ─────────────────────────────────────────────────────────────────────
+
+function renderHero(data) {
+    document.getElementById('home').innerHTML = `
+        <p class="hero-eyebrow fade-in">// ${esc(data.eyebrow)}</p>
+        <h1 class="hero-name fade-in">${esc(data.name.first)} <span>${esc(data.name.last)}</span></h1>
+        <p class="hero-title fade-in">${esc(data.title)}</p>
+        <div class="hero-bottom fade-in">
+            <p class="hero-desc">${esc(data.description)}</p>
+            <a class="hero-cta" href="#experience">View Experience →</a>
+        </div>`;
+}
+
+// ── Section wrapper ───────────────────────────────────────────────────────────
+
+function sectionHtml(section, index, inner) {
+    const num = String(index).padStart(2, '0');
+    return `
+<section id="${section.id}">
+    <p class="section-label fade-in">// ${num}. ${esc(section.nav.toUpperCase())}</p>
+    <h2 class="section-title fade-in">${esc(section.title)}</h2>
+    ${inner}
+</section>`;
+}
+
+// ── Section renderers ─────────────────────────────────────────────────────────
+
+function renderAbout(data) {
+    const paras = data.paragraphs.map(p => `<p>${p}</p>`).join('');
+    const stats = data.stats.map(s => `
+        <div class="stat-cell">
+            <div class="stat-num">${esc(s.value)}</div>
+            <div class="stat-label">${esc(s.label)}</div>
+        </div>`).join('');
+    return `
+    <div class="about-grid fade-in">
+        <div class="about-text">${paras}</div>
+        <div class="about-stats">${stats}</div>
+    </div>`;
+}
+
+const SKILL_COLORS = { blue: '#63caff', orange: '#fb923c', purple: '#a78bfa', green: '#34d399' };
+
+function renderSkills(data) {
+    const groups = data.groups.map(g => {
+        const color = SKILL_COLORS[g.color] || SKILL_COLORS.purple;
+        return `
+        <div class="skill-group" style="--skill-color: ${color}">
+            <p class="skill-group-title">${esc(g.title)}</p>
+            <ul class="skill-list">${g.items.map(i => `<li>${esc(i)}</li>`).join('')}</ul>
+        </div>`;
+    }).join('');
+    return `<div class="skills-grid fade-in">${groups}</div>`;
+}
+
+const MONTH_NUM = { Jan:1,Feb:2,Mar:3,Apr:4,May:5,Jun:6,Jul:7,Aug:8,Sep:9,Oct:10,Nov:11,Dec:12 };
+
+function formatDate(date) {
+    if (!date) return '';
+    const fmt = d => d.month ? `${d.month} ${d.year}` : `${d.year}`;
+    const end  = date.end ? fmt(date.end) : 'Present';
+    return `${fmt(date.start)} — ${end}`;
+}
+
+function calcDuration(start, end) {
+    const s = new Date(start.year, (MONTH_NUM[start.month] || 1) - 1);
+    const e = end ? new Date(end.year, (MONTH_NUM[end.month] || 1) - 1) : new Date();
+    const months = (e.getFullYear() - s.getFullYear()) * 12 + (e.getMonth() - s.getMonth());
+    const yrs = Math.floor(months / 12);
+    const mos = months % 12;
+    const parts = [];
+    if (yrs) parts.push(`${yrs} yr${yrs !== 1 ? 's' : ''}`);
+    if (mos) parts.push(`${mos} mo${mos !== 1 ? 's' : ''}`);
+    return parts.join(' ') || '< 1 mo';
+}
+
+function formatTenure(tenure) {
+    if (typeof tenure === 'string') return tenure;
+    const range    = formatDate({ start: tenure.start, end: tenure.end });
+    const duration = calcDuration(tenure.start, tenure.end);
+    return `${range} · ${duration} · ${tenure.location}`;
+}
+
+function timelineItemHtml(item, showSummary) {
+    const tags = item.tags.map(t =>
+        `<span class="tag tag-${t.color}">${esc(t.text)}</span>`).join('');
+    const bullets = item.bullets.map(b => `<li>${esc(b)}</li>`).join('');
+    const roleParts = item.name ? [item.role, item.type, item.location].filter(Boolean) : [];
+    return `
+    <div class="timeline-item fade-in">
+        <div class="timeline-date">${esc(typeof item.date === 'object' ? formatDate(item.date) : item.date)}</div>
+        <div class="timeline-content">
+            <p class="exp-role">${esc(item.name || item.role)}</p>
+            ${roleParts.length ? `<p class="exp-role-sub">${roleParts.map(esc).join(' · ')}</p>` : ''}
+            ${showSummary && item.summary ? `<p class="exp-summary">${esc(item.summary)}</p>` : ''}
+            ${tags    ? `<div class="exp-tags">${tags}</div>`      : ''}
+            ${bullets ? `<ul class="exp-bullets">${bullets}</ul>`  : ''}
+        </div>
+    </div>`;
+}
+
+function renderExperience(data) {
+    const sorted = [...data.items].sort((a, b) => {
+        if (b.date.start.year !== a.date.start.year) return b.date.start.year - a.date.start.year;
+        return (MONTH_NUM[b.date.start.month] || 0) - (MONTH_NUM[a.date.start.month] || 0);
+    });
+    const items = sorted.map(i => timelineItemHtml(i, true)).join('');
+    const logo  = data.company.logo
+        ? `<img class="company-logo" src="${data.company.logo}" alt="${esc(data.company.name)} logo">`
+        : '';
+    return `
+    <div class="company-header fade-in">
+        <span class="company-name">${logo}${esc(data.company.name)}</span>
+        <span class="company-tenure">${esc(formatTenure(data.company.tenure))}</span>
+    </div>
+    <div class="timeline">${items}</div>`;
+}
+
+function renderEducation(data) {
+    const items = data.items.map(i => timelineItemHtml(i, false)).join('');
+    return `
+    <div class="company-header fade-in">
+        <span class="company-name">${esc(data.institution.name)}</span>
+        <span class="company-tenure">${esc(data.institution.tenure)}</span>
+    </div>
+    <div class="timeline">${items}</div>`;
+}
+
+function renderContact(data) {
+    const links = data.links.map(l => `
+        <a class="contact-link" href="${l.href}" target="_blank">
+            ${l.qr ? `<img class="contact-link-qr" src="${l.qr}" alt="${esc(l.label)} QR">` : ''}
+            <span class="contact-link-label">↗ ${esc(l.label)}</span>
+        </a>`).join('');
+    return `
+    <div class="contact-inner fade-in">
+        <p class="contact-desc">${esc(data.description)}</p>
+        <div class="contact-links">${links}</div>
+    </div>`;
+}
+
+const RENDERERS = { about: renderAbout, skills: renderSkills, experience: renderExperience, education: renderEducation, contact: renderContact };
+
+// ── Fade-in observer ──────────────────────────────────────────────────────────
+
+function setupFadeIn() {
     const obs = new IntersectionObserver(entries => {
         entries.forEach(e => {
-            if (e.isIntersecting) {
-                e.target.classList.add('visible');
-                obs.unobserve(e.target);
-            }
+            if (e.isIntersecting) { e.target.classList.add('visible'); obs.unobserve(e.target); }
         });
     }, { threshold: 0.1 });
-    els.forEach(el => obs.observe(el));
+    document.querySelectorAll('.fade-in').forEach(el => obs.observe(el));
+}
+
+// ── Init ──────────────────────────────────────────────────────────────────────
+
+async function init() {
+    const [manager, hero] = await Promise.all([
+        fetch('content/manager.json').then(r => r.json()),
+        fetch('content/hero.json').then(r => r.json()),
+    ]);
+
+    renderNav(manager.sections);
+    renderHero(hero);
+
+    const container = document.getElementById('sections-container');
+    for (const [i, section] of manager.sections.entries()) {
+        const data     = await fetch('content/' + section.file).then(r => r.json());
+        const renderer = RENDERERS[section.id];
+        if (!renderer) continue;
+        container.insertAdjacentHTML('beforeend', sectionHtml(section, i + 1, renderer(data)));
+    }
+
+    setupFadeIn();
+}
+
+init();
 </script>
 
 </body>

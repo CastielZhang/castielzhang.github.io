@@ -1,0 +1,24 @@
+{
+  "groups": [
+    {
+      "title": "Web Languages",
+      "color": "blue",
+      "items": ["TypeScript / JavaScript", "Apex (Salesforce)", "HTML / CSS"]
+    },
+    {
+      "title": "General Languages",
+      "color": "orange",
+      "items": ["Python", "Bash / Shell"]
+    },
+    {
+      "title": "Frameworks & Libraries",
+      "color": "purple",
+      "items": ["React", "Electron", "Chakra UI", "Lightning Web Components", "Salesforce Flows", "Node.js", "Git / GitHub"]
+    },
+    {
+      "title": "Platforms & Systems",
+      "color": "green",
+      "items": ["Linux / Ubuntu", "NVIDIA / CUDA", "Docker", "Salesforce CRM", "Custom ISO / BIOS", "Data Pipelines / AI"]
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "description": "Open to conversations about interesting projects, collaborations, or opportunities. Reach out via LinkedIn or GitHub.",
+  "links": [
+    {
+      "label": "LinkedIn",
+      "href": "https://www.linkedin.com/in/castiel-zhang-12433a114/",
+      "qr": "content/sections/icons/linkedin-qr.png"
+    },
+    {
+      "label": "GitHub",
+      "href": "https://github.com/castielzhang",
+      "qr": "content/sections/icons/github-qr.png"
+    }
+  ]
+}

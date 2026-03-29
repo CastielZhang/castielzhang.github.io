@@ -1,0 +1,168 @@
+{
+  "company": {
+    "name": "UTS Rapido",
+    "tenure": {
+      "start": { "month": "Apr", "year": 2022 },
+      "end": null,
+      "location": "Sydney, AU"
+    },
+    "logo": "content/sections/icons/uts-logo.svg"
+  },
+  "items": [
+    {
+      "date": { "start": { "month": "Aug", "year": 2024 }, "end": { "month": "Dec", "year": 2025 } },
+      "role": "Associate Software Engineer",
+      "type": "Full-time",
+      "location": "Hybrid",
+      "name": "DSI Project — AI-Powered Data Intelligence Platform",
+      "summary": "Research collaboration with UTS building an end-to-end pipeline that scrapes social media at scale, analyses discourse trends, and republishes AI-tagged content to a third-party platform.",
+      "tags": [
+        { "text": "TypeScript",     "color": "blue"   },
+        { "text": "Python",         "color": "orange" },
+        { "text": "Chakra UI",      "color": "purple" },
+        { "text": "AI / NLP",       "color": "green"  },
+        { "text": "Data Pipelines", "color": "green"  },
+        { "text": "Web Scraping",   "color": "green"  }
+      ],
+      "bullets": [
+        "In collaboration with Prof. Marian Andrei Rizoiu, UTS.",
+        "Developed and maintained scrapers targeting major social media platforms to extract content signals, trending keywords, and engagement metrics at scale.",
+        "Aggregated and analysed topic trends over time to surface insights into evolving discourse patterns.",
+        "Phase 2: integrated with a third-party publishing platform to automate an end-to-end pipeline — ingesting native data, applying AI-driven tagging and categorisation, and republishing enriched content programmatically."
+      ]
+    },
+    {
+      "date": { "start": { "month": "Jul", "year": 2024 }, "end": { "month": "Mar", "year": 2025 } },
+      "role": "Associate Software Engineer",
+      "type": "Full-time",
+      "location": "Hybrid",
+      "name": "WV-Tech Phase 2 — GPU Memory Erasure & Integration",
+      "summary": "Extended the data-wiping platform with NVIDIA VRAM erasure, embedding custom GPU drivers into a bootable ISO and validating against IEEE data-erasure standards with external certification partner Viden.",
+      "tags": [
+        { "text": "Bash",           "color": "orange" },
+        { "text": "NVIDIA / CUDA",  "color": "purple" },
+        { "text": "Linux",          "color": "green"  },
+        { "text": "Custom ISO",     "color": "green"  },
+        { "text": "IEEE Standards", "color": "green"  }
+      ],
+      "bullets": [
+        "Researched and implemented VRAM read/write erasure for NVIDIA graphics cards, with dynamic adaptation across different GPU and motherboard vendors.",
+        "Embedded pre-configured GPU drivers directly into a custom ISO image for seamless deployment across target hardware environments.",
+        "Liaised with external partner Viden — provided technical support for performance testing, IEEE data-erasure standard validation, and formal certification verification."
+      ]
+    },
+    {
+      "date": { "start": { "month": "Mar", "year": 2025 }, "end": null },
+      "role": "Associate Software Engineer",
+      "type": "Full-time",
+      "location": "On-site",
+      "name": "Salesforce Developer & Administrator",
+      "summary": "CRM development and administration for UTS Rapido's internal operations — building Apex automations, LWC components, and data integrity systems to support cross-team reporting.",
+      "tags": [
+        { "text": "Apex",                 "color": "blue"   },
+        { "text": "LWC",                  "color": "purple" },
+        { "text": "Flows",                "color": "purple" },
+        { "text": "Reports & Dashboards", "color": "green"  }
+      ],
+      "bullets": [
+        "Implemented bidirectional Grant Type field synchronisation between Opportunity and Campaign objects using Record-Triggered Flows and Global Value Sets.",
+        "Built Campaign-Opportunity data integrity systems and resolved relationship issues affecting cross-team reporting pipelines.",
+        "Configured SDG multi-select picklist integration, ANZSIC classification fields, and role hierarchy access controls."
+      ]
+    },
+    {
+      "date": { "start": { "month": "Sep", "year": 2023 }, "end": { "month": "Dec", "year": 2023 } },
+      "role": "Associate Software Engineer",
+      "type": "Full-time",
+      "location": "On-site",
+      "name": "UTS Working Planning Tool",
+      "summary": "Internal staff planning web app built from scratch in React and TypeScript, self-directed into an entirely unfamiliar stack and delivered on schedule.",
+      "tags": [
+        { "text": "TypeScript",    "color": "blue"   },
+        { "text": "React",         "color": "purple" },
+        { "text": "Chakra UI",     "color": "purple" },
+        { "text": "Responsive UI", "color": "green"  }
+      ],
+      "bullets": [
+        "Self-directed into web development with no prior experience — spearheaded the build using React and TypeScript from scratch.",
+        "Mastered React routing, providers, and component architecture; designed responsive layouts for cross-device compatibility.",
+        "Delivered a robust, comprehensive planning tool on schedule despite an entirely unfamiliar stack."
+      ]
+    },
+    {
+      "date": { "start": { "month": "Mar", "year": 2023 }, "end": { "month": "Aug", "year": 2023 } },
+      "role": "Associate Software Engineer",
+      "type": "Contract",
+      "location": "Hybrid",
+      "name": "WV-Tech — Comprehensive Data Wiping Software",
+      "summary": "Cross-platform desktop application for secure hardware data erasure, combining an Electron/React frontend with a Bash backend for BIOS interrogation, hardware reporting, and automated PDF output.",
+      "tags": [
+        { "text": "TypeScript",    "color": "blue"   },
+        { "text": "Bash",          "color": "orange" },
+        { "text": "React",         "color": "purple" },
+        { "text": "Electron",      "color": "purple" },
+        { "text": "Chakra UI",     "color": "purple" },
+        { "text": "PDF Reporting", "color": "green"  }
+      ],
+      "bullets": [
+        "Led project direction in sync with client needs; guided team to ensure timely milestone delivery.",
+        "Built a secure data-wiping backend including BIOS interrogation and battery reporting capabilities.",
+        "Designed an intuitive Electron React interface communicating fluidly with the bash backend.",
+        "Enabled auto-generation of detailed hardware reports with consolidated PDF output and asset tag removal."
+      ]
+    },
+    {
+      "date": { "start": { "month": "Feb", "year": 2023 }, "end": { "month": "Jun", "year": 2023 } },
+      "role": "Associate Software Engineer",
+      "type": "Contract",
+      "location": "Hybrid",
+      "name": "Quantum Project — Embedded OS & Dev Environment",
+      "summary": "Set up embedded Linux environments on single-board computers (Banana Pi, Raspberry Pi, Radxa CM3) for client TheQ, flashing custom OS images and containerising the development workflow with Docker.",
+      "tags": [
+        { "text": "Docker",                   "color": "purple" },
+        { "text": "Ubuntu",                   "color": "green"  },
+        { "text": "Banana Pi / Raspberry Pi", "color": "green"  },
+        { "text": "Radxa CM3",                "color": "green"  }
+      ],
+      "bullets": [
+        "Client: TheQ. Utilised Banana Pi, Raspberry Pi, and Radxa CM3 chips to flash Ubuntu OS images, enhancing chip functionality.",
+        "Established a productive development environment using Docker for streamlined project development and deployment."
+      ]
+    },
+    {
+      "date": { "start": { "month": "Sep", "year": 2022 }, "end": { "month": "Jan", "year": 2023 } },
+      "role": "Junior Software Engineer",
+      "type": "Contract",
+      "location": "Hybrid",
+      "name": "Distributed Processing System",
+      "summary": "Built a distributed processing system over a LAN bridge between master and worker nodes — tasks are split on the master, automatically distributed to workers via Python Celery, and results merged once all jobs complete.",
+      "tags": [
+        { "text": "Python", "color": "orange" },
+        { "text": "Bash",   "color": "orange" },
+        { "text": "Linux",  "color": "green"  },
+        { "text": "Ubuntu", "color": "green"  }
+      ],
+      "bullets": [
+        "Contract role contributing to internal software projects across Linux and Python-based tooling."
+      ]
+    },
+    {
+      "date": { "start": { "month": "Apr", "year": 2022 }, "end": { "month": "Aug", "year": 2022 } },
+      "role": "Software Engineer Intern",
+      "type": "Internship",
+      "location": "On-site",
+      "name": "Navantia Digital Twin",
+      "summary": "Internship on a defence maritime digital twin project, contributing to architecture simulation for the overall system model.",
+      "tags": [
+        { "text": "Python",                  "color": "orange" },
+        { "text": "Bash",                    "color": "orange" },
+        { "text": "Ubuntu",                  "color": "green"  },
+        { "text": "Architecture Simulation", "color": "green"  },
+        { "text": "Digital Twin",            "color": "green"  }
+      ],
+      "bullets": [
+        "Involved in the Navantia Digital Twin project, contributing to architecture simulation for the overall system."
+      ]
+    }
+  ]
+}

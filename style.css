@@ -203,6 +203,15 @@ section:first-of-type { padding-top: 10rem; }
     font-size: 1.5rem;
     font-weight: 800;
     letter-spacing: -0.01em;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+}
+.company-logo {
+    height: 1.6rem;
+    width: auto;
+    filter: invert(1);
+    opacity: 0.9;
 }
 .company-tenure {
     font-family: var(--mono);
@@ -255,7 +264,14 @@ section:first-of-type { padding-top: 10rem; }
 .exp-role {
     font-size: 1.5rem;
     font-weight: 800;
+    margin-bottom: 0.4rem;
+}
+.exp-role-sub {
+    font-family: var(--mono);
+    font-size: 0.85rem;
+    color: var(--muted);
     margin-bottom: 1rem;
+    letter-spacing: 0.03em;
 }
 .exp-summary {
     font-size: 16px;
@@ -280,6 +296,7 @@ section:first-of-type { padding-top: 10rem; }
 .tag-blue  { color: var(--accent);  border-color: rgba(99,202,255,0.3);  background: rgba(99,202,255,0.05); }
 .tag-purple{ color: var(--accent2); border-color: rgba(167,139,250,0.3); background: rgba(167,139,250,0.05); }
 .tag-green { color: var(--accent3); border-color: rgba(52,211,153,0.3);  background: rgba(52,211,153,0.05); }
+.tag-orange{ color: #fb923c;        border-color: rgba(251,146,60,0.3);  background: rgba(251,146,60,0.05);  }
 .exp-bullets { list-style: none; display: flex; flex-direction: column; gap: 0.5rem; }
 .exp-bullets li {
     font-size: 20px;
@@ -298,7 +315,7 @@ section:first-of-type { padding-top: 10rem; }
 /* ── SKILLS ── */
 .skills-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(4, 1fr);
     gap: 1px;
     background: var(--border);
     border: 1px solid var(--border);
@@ -313,7 +330,7 @@ section:first-of-type { padding-top: 10rem; }
     font-family: var(--mono);
     font-size: 20px;
     letter-spacing: 0.15em;
-    color: var(--accent);
+    color: var(--skill-color, var(--accent2));
     margin-bottom: 1rem;
     text-transform: uppercase;
 }
@@ -330,7 +347,7 @@ section:first-of-type { padding-top: 10rem; }
     display: inline-block;
     width: 4px; height: 4px;
     border-radius: 50%;
-    background: var(--accent2);
+    background: var(--skill-color, var(--accent2));
     flex-shrink: 0;
 }
 
@@ -342,26 +359,36 @@ section:first-of-type { padding-top: 10rem; }
     padding: 3rem;
     display: flex;
     flex-direction: column;
-    align-items: flex-start;
+    align-items: center;
     gap: 2rem;
 }
-.contact-desc { font-size: 20px; color: var(--muted); max-width: 480px; line-height: 1.8; }
-.contact-links { display: flex; gap: 1rem; flex-wrap: wrap; }
+.contact-desc { font-size: 20px; color: var(--muted); line-height: 2.2; letter-spacing: 0.02em; margin-bottom: 0.5rem; }
+.contact-links { display: flex; gap: 8rem; flex-wrap: wrap; justify-content: center; width: 100%; }
 .contact-link {
     font-family: var(--mono);
     font-size: 18px;
     letter-spacing: 0.08em;
     color: var(--text);
     border: 1px solid var(--border);
-    padding: 0.65rem 1.2rem;
-    border-radius: 2px;
+    border-radius: 10px;
     text-decoration: none;
     transition: border-color 0.2s, color 0.2s;
     display: flex;
+    flex-direction: column;
     align-items: center;
-    gap: 0.5rem;
+    overflow: hidden;
 }
 .contact-link:hover { border-color: var(--accent); color: var(--accent); }
+.contact-link-qr { display: block; width: 100px; height: 100px; object-fit: cover; }
+.contact-link-label {
+    padding: 0.6rem 1.2rem;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    border-top: 1px solid var(--border);
+    width: 100%;
+    justify-content: center;
+}
 
 /* ── FOOTER ── */
 footer {
@@ -393,5 +420,5 @@ footer {
     .timeline-date { padding: 2rem 0 0; text-align: left; }
     .timeline-content { padding-left: 0; }
     .timeline-content::before { display: none; }
-    .skills-grid { grid-template-columns: 1fr; }
+    .skills-grid { grid-template-columns: repeat(2, 1fr); }
 }
