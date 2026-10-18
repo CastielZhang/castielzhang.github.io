@@ -43,7 +43,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
     <!-- Bump ?v= whenever style.css changes so browsers drop their cached copy -->
-    <link rel="stylesheet" href="style.css?v=12" />
+    <link rel="stylesheet" href="style.css?v=20" />
     <link rel="icon" href="favicon.ico" sizes="any" />
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
     <link rel="apple-touch-icon" href="apple-touch-icon.png" />
@@ -102,7 +102,7 @@ function renderHero(data) {
     const user = esc(data.terminal.user);
     document.getElementById('home').innerHTML = `
         <p class="hero-eyebrow fade-in">// ${esc(data.eyebrow)}</p>
-        <h1 class="hero-name fade-in">${esc(data.name.first)} <span>${esc(data.name.last)}</span></h1>
+        <h1 class="hero-name fade-in" aria-label="${esc(data.name.first)} ${esc(data.name.last)}">${esc(data.name.first)} <span>${esc(data.name.last)}</span></h1>
         <div class="term fade-in" id="term">
             <div class="term-bar" aria-hidden="true">
                 <span class="term-dot"></span><span class="term-dot"></span><span class="term-dot"></span>
@@ -120,10 +120,117 @@ function renderHero(data) {
         </div>`;
 }
 
-// ── Hero terminal ─────────────────────────────────────────────────────────────
-
 const REDUCED_MOTION = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const sleep = ms => new Promise(r => setTimeout(r, REDUCED_MOTION ? 0 : ms));
+
+// Text "decrypts" from random glyphs, revealing left to right. Works on a Text node or element.
+const GLYPHS = 'ABCDEFGHJKLMNPQRSTUVWXYZabcdefghkmnpqrstuvwxyz0123456789#$%&*<>/=+';
+
+function decodeText(node, { delay = 0, duration = 900, swapEvery = 80 } = {}) {
+    const final = node.textContent;
+    if (REDUCED_MOTION || !final.trim()) return;
+    const scramble = shown => [...final]
+        .map((ch, i) => i < shown || ch === ' ' ? ch : GLYPHS[Math.random() * GLYPHS.length | 0]).join('');
+    node.textContent = scramble(0);
+    const t0 = performance.now() + delay;
+    let lastSwap = 0;
+    const tick = now => {
+        const k = Math.max(0, Math.min(1, (now - t0) / duration));
+        // Glyphs only reshuffle every `swapEvery` ms; every frame (60 fps) reads as a blur
+        if (k === 1) node.textContent = final;
+        else if (now - lastSwap >= swapEvery) { lastSwap = now; node.textContent = scramble(Math.floor(final.length * k)); }
+        if (k < 1) requestAnimationFrame(tick);
+    };
+    requestAnimationFrame(tick);
+    // Safety net: rAF pauses in background tabs, so make sure the real text always lands
+    setTimeout(() => { node.textContent = final; }, delay + duration + 400);
+}
+
+function decodeHeroName() {
+    const h1 = document.querySelector('.hero-name');
+    decodeText(h1.firstChild, { duration: 2200, swapEvery: 65 });
+    decodeText(h1.querySelector('span'), { delay: 600, duration: 2200, swapEvery: 65 });
+}
+
+// ── Matrix rain (Konami code / `matrix`) ─────────────────────────────────────
+
+const KONAMI = ['arrowup', 'arrowup', 'arrowdown', 'arrowdown', 'arrowleft', 'arrowright', 'arrowleft', 'arrowright', 'b', 'a'];
+
+// Runs for a few seconds, or until a click / Esc; returns false if it can't start
+function matrixRain(ms = 9000) {
+    if (REDUCED_MOTION || document.querySelector('.matrix-rain')) return false;
+    const canvas = document.createElement('canvas');
+    canvas.className = 'matrix-rain';
+    canvas.setAttribute('aria-hidden', 'true');
+    document.body.appendChild(canvas);
+    const g = canvas.getContext('2d');
+    const size = 16, chars = 'アイウエオカキクケコサシスセソタチツテトナニヌネノハヒフヘホマミムメモヤユヨラリルレロワン0123456789CASTIELZHANG';
+    canvas.width = innerWidth;
+    canvas.height = innerHeight;
+    const drops = Array.from({ length: Math.ceil(canvas.width / size) }, () => -Math.random() * canvas.height / size);
+    g.font = `${size}px ${getComputedStyle(document.body).getPropertyValue('--mono')}`;
+
+    let last = 0, raf;
+    const frame = now => {
+        raf = requestAnimationFrame(frame);
+        if (now - last < 45) return;   // ~22 fps reads as "digital rain"; 60 fps just looks smeared
+        last = now;
+        g.fillStyle = 'rgba(0, 0, 0, 0.08)';
+        g.fillRect(0, 0, canvas.width, canvas.height);
+        drops.forEach((y, i) => {
+            const ch = chars[Math.random() * chars.length | 0];
+            g.fillStyle = Math.random() < 0.04 ? '#e9ffe9' : '#3cff6b';
+            g.fillText(ch, i * size, y * size);
+            drops[i] = y * size > canvas.height && Math.random() > 0.975 ? 0 : y + 1;
+        });
+    };
+    raf = requestAnimationFrame(frame);
+
+    const stop = () => {
+        clearTimeout(timer);
+        removeEventListener('keydown', onKey);
+        canvas.classList.add('is-leaving');
+        setTimeout(() => { cancelAnimationFrame(raf); canvas.remove(); }, 800);
+    };
+    const onKey = e => { if (e.key === 'Escape') stop(); };
+    const timer = setTimeout(stop, ms);
+    canvas.addEventListener('click', stop);
+    addEventListener('keydown', onKey);
+    return true;
+}
+
+function setupKonami() {
+    let pos = 0;
+    addEventListener('keydown', e => {
+        const key = e.key.toLowerCase();
+        pos = key === KONAMI[pos] ? pos + 1 : (key === KONAMI[0] ? 1 : 0);
+        if (pos === KONAMI.length) { pos = 0; matrixRain(); }
+    });
+}
+
+// ── Little extras ─────────────────────────────────────────────────────────────
+
+// Hello to anyone who opens DevTools
+function consoleHello() {
+    const accent = getComputedStyle(document.documentElement).getPropertyValue('--accent').trim();
+    console.log(
+        `%c${NEOFETCH_ART.join('\n')}\n\n%cHey fellow dev 👋  Poking around the source?\n`
+        + `Try typing 'help' in the terminal up top, or ↑ ↑ ↓ ↓ ← → ← → B A.\n`
+        + `Source: https://github.com/CastielZhang/castielzhang.github.io`,
+        `color:${accent};font-family:monospace;font-weight:bold;line-height:1.2`,
+        'font-family:monospace;line-height:1.6',
+    );
+}
+
+// The tab title waves at visitors who switch away
+function setupTabTitle() {
+    const title = document.title;
+    document.addEventListener('visibilitychange', () => {
+        document.title = document.hidden ? '👀 Come back… · Castiel Zhang' : title;
+    });
+}
+
+// ── Hero terminal ─────────────────────────────────────────────────────────────
 
 const term = {
     body: null, user: '', commands: {}, history: [], histPos: 0,
@@ -166,12 +273,40 @@ const term = {
     },
 };
 
+const NEOFETCH_ART = [
+    '  ____ _____',
+    ' / ___|__  /',
+    '| |     / / ',
+    '| |___ / /_ ',
+    ' \\____/____|',
+];
+
+// Longest prefix shared by every word, e.g. ['contact', 'cd'] → 'c'
+const commonPrefix = words => words.reduce((a, b) => {
+    let i = 0;
+    while (i < a.length && a[i] === b[i]) i++;
+    return a.slice(0, i);
+});
+
 function setupTerminal(hero, sections, ctx) {
     term.body = document.getElementById('term-body');
     term.user = hero.terminal.user;
+    const termEl = document.getElementById('term');
+    const form   = document.getElementById('term-form');
+    const input  = document.getElementById('term-input');
     const ids = sections.map(s => s.id);
+    // "Files" are the intro's `cat <file>` steps, plus resume.pdf which opens the print dialog
+    const files = [...hero.terminal.intro.map(s => s.cmd.match(/^cat (\S+)$/)?.[1]).filter(Boolean), 'resume.pdf'];
     const goto = id => document.getElementById(id).scrollIntoView({ behavior: REDUCED_MOTION ? 'auto' : 'smooth' });
     const row = (k, v) => `<span class="term-hl">${esc(k.padEnd(12))}</span>${v}`;
+    const kv  = (k, v) => `<span class="term-hl">${esc(k)}</span>: ${v}`;
+    // Hides the prompt while an animated command plays, then hands focus back
+    const busy = async fn => {
+        form.hidden = true;
+        await fn();
+        form.hidden = false;
+        input.focus({ preventScroll: true });
+    };
 
     // Intro commands can be re-run by typing them
     for (const step of hero.terminal.intro) term.commands[step.cmd] = () => term.print(step.out.map(esc));
@@ -183,9 +318,13 @@ function setupTerminal(hero, sections, ctx) {
             row('projects', 'what I\'ve built'),
             row('skills', 'technical stack'),
             row('contact', 'get in touch'),
-            row('ls', 'list sections'),
+            row('neofetch', 'system info'),
+            row('ls', 'list sections and files'),
             row('cd <name>', 'jump to a section, e.g. cd experience'),
+            row('cat <file>', 'read a file, e.g. cat resume.pdf'),
+            row('history', 'previous commands'),
             row('clear', 'clear the screen'),
+            '<span class="term-dim">Tip: press Tab to autocomplete</span>',
         ]),
         about: () => term.print(ctx.about.paragraphs.map(p => esc(plainText(p)))),
         projects: () => term.print(sortByStart(ctx.experience.items).map(i =>
@@ -195,22 +334,116 @@ function setupTerminal(hero, sections, ctx) {
             ...(ctx.contact.email ? [row('email', `<a class="term-link" href="mailto:${esc(ctx.contact.email)}">${esc(ctx.contact.email)}</a>`)] : []),
             ...ctx.contact.links.map(l => row(l.label.toLowerCase(), `<a class="term-link" href="${esc(l.href)}" target="_blank">${esc(l.href.replace(/^https?:\/\/(www\.)?/, ''))}</a>`)),
         ]),
-        ls: () => term.print(ids.map(id => `<span class="term-hl">${esc(id)}/</span>`).join('  ')),
+        ls: () => term.print([...ids.map(id => `<span class="term-hl">${esc(id)}/</span>`), ...files.map(esc)].join('  ')),
         cd: ([dest = '']) => {
             const id = dest.replace(/^[~./]+|\/$/g, '').toLowerCase();
             if (!id) return;
             if (ids.includes(id)) goto(id);
             else term.print(`cd: no such section: ${esc(dest)} — try <span class="term-hl">ls</span>`);
         },
+        cat: ([file]) => {
+            if (!file) return term.print('usage: cat &lt;file&gt; — try <span class="term-hl">ls</span>');
+            if (file === 'resume.pdf') {
+                term.print('Opening print dialog… choose "Save as PDF" to download.');
+                return setTimeout(() => print(), 300);
+            }
+            const fn = term.commands[`cat ${file}`];
+            if (fn) fn();
+            else term.print(`cat: ${esc(file)}: No such file or directory`);
+        },
+        neofetch: () => {
+            const exp = ctx.experience, [name, host] = term.user.split('@');
+            const tenure = exp.company.tenure;
+            const swatches = ['accent', 'c-blue', 'c-green', 'c-orange', 'c-purple']
+                .map(c => `<span class="term-swatch" style="background:var(--${c})"></span>`).join('');
+            const info = [
+                `<span class="term-prompt">${esc(name)}</span>@<span class="term-prompt">${esc(host)}</span>`,
+                `<span class="term-dim">${'-'.repeat(term.user.length)}</span>`,
+                kv('OS', `Human (${esc(tenure.location)})`),
+                kv('Host', esc(exp.company.name)),
+                kv('Uptime', esc(calcDuration(tenure.start, tenure.end))),
+                kv('Projects', esc(exp.items.length)),
+                kv('Stack', esc(ctx.skills.groups.map(g => g.items[0]).join(' · '))),
+                kv('Shell', 'portfolio-sh'),
+                '',
+                swatches,
+            ];
+            term.print(info.map((line, i) =>
+                `<span class="term-art">${esc((NEOFETCH_ART[i] || '').padEnd(15))}</span>${line}`));
+        },
+        history: () => term.print(term.history.map((h, i) => `<span class="term-dim">${String(i + 1).padStart(4)}</span>  ${esc(h)}`)),
+        date: () => term.print(esc(new Date().toLocaleString('en-AU', { timeZone: 'Australia/Sydney', dateStyle: 'full', timeStyle: 'long' }))),
+        echo: args => term.print(esc(args.join(' '))),
+        exit: () => busy(async () => {
+            term.print(['logout', `Connection to ${esc(location.hostname || 'localhost')} closed.`]);
+            await sleep(1500);
+            term.body.innerHTML = '';
+            term.print(`Last login: ${esc(new Date().toString().slice(0, 24))} on ttys001`);
+        }),
+        rm: args => {
+            const flags = args.filter(a => a.startsWith('-')).join('');
+            if (!(flags.includes('r') && flags.includes('f') && args.some(a => /^\/\*?$/.test(a))))
+                return term.print(`rm: cannot remove '${esc(args.at(-1) || '')}': Permission denied`);
+            return busy(async () => {
+                for (const id of ids) { term.print(`removed '/${esc(id)}/'`); await sleep(160); }
+                term.print('<span class="term-err">Kernel panic — not syncing: portfolio not found</span>');
+                termEl.classList.add('is-crashed');
+                await sleep(1600);
+                termEl.classList.remove('is-crashed');
+                term.body.innerHTML = '';
+                term.print(['Rebooting…', 'Restored from backup. Nothing was harmed 🙂']);
+            });
+        },
         clear: () => { term.body.innerHTML = ''; },
-        sudo: () => term.print('Nice try. This incident will be reported. 😉'),
+        matrix: () => term.print(matrixRain()
+            ? 'Wake up, Neo… <span class="term-dim">(click or Esc to exit)</span>'
+            : 'The Matrix is resting — reduced motion is on.'),
+        sudo: args => {
+            const name = term.user.split('@')[0];
+            const cmd  = args.join(' ').toLowerCase();
+            if (!cmd) return term.print('usage: sudo &lt;command&gt;');
+            if (cmd === 'make me a sandwich') return term.print('Okay. 🥪');
+            if (cmd === '!!') return term.print(`<span class="term-dim">nice reflex.</span> But ${esc(name)} still isn't root.`);
+            // Anything else gets a fake password prompt that "types" a few asterisks, then the classic refusal
+            return busy(async () => {
+                const p = term.line(`[sudo] password for ${esc(name)}: `);
+                for (let i = 0; i < 8; i++) { await sleep(90); p.textContent += '*'; }
+                await sleep(500);
+                term.print(/^rm\b/.test(cmd) && /-\w*r\w*f|-\w*f\w*r/.test(cmd)
+                    ? `${esc(name)} is not in the sudoers file. And definitely not for <span class="term-err">${esc(args.join(' '))}</span>. This incident will be reported. 😉`
+                    : `${esc(name)} is not in the sudoers file. This incident will be reported. 😉`);
+            });
+        },
     });
     term.commands.open = term.commands.cd;
 
-    const form  = document.getElementById('term-form');
-    const input = document.getElementById('term-input');
+    // Tab completes command names, then section names after cd/open and file names after cat.
+    // With several matches it fills the shared prefix and lists the options, like a real shell.
+    const ARG_COMPLETIONS = { cd: ids, open: ids, cat: files };
+    const HIDDEN = ['sudo', 'rm', 'open', 'matrix'];
+    const complete = value => {
+        const parts = value.trimStart().split(/\s+/);
+        const word  = parts.pop().toLowerCase();
+        const pool  = parts.length
+            ? (parts.length === 1 && ARG_COMPLETIONS[parts[0].toLowerCase()]) || []
+            : Object.keys(term.commands).filter(c => !c.includes(' ') && !HIDDEN.includes(c));
+        const matches = pool.filter(c => c.startsWith(word));
+        if (!matches.length) return value;
+        const head = parts.length ? parts.join(' ') + ' ' : '';
+        if (matches.length === 1) return head + matches[0] + (!parts.length && ARG_COMPLETIONS[matches[0]] ? ' ' : '');
+        term.promptLine(value);
+        term.print(matches.map(m => `<span class="term-hl">${esc(m)}</span>`).join('  '));
+        return head + commonPrefix(matches);
+    };
+
     form.addEventListener('submit', e => { e.preventDefault(); term.run(input.value); input.value = ''; });
     input.addEventListener('keydown', e => {
+        // On an empty prompt Tab moves focus as usual, so keyboard users can still leave the terminal
+        if (e.key === 'Tab' && !e.shiftKey && input.value.trim()) {
+            e.preventDefault();
+            input.value = complete(input.value);
+            return;
+        }
         if (e.key !== 'ArrowUp' && e.key !== 'ArrowDown') return;
         e.preventDefault();
         term.histPos = Math.max(0, Math.min(term.history.length, term.histPos + (e.key === 'ArrowUp' ? -1 : 1)));
@@ -229,7 +462,7 @@ function setupTerminal(hero, sections, ctx) {
 function sectionHtml(section, index, inner) {
     const num = String(index).padStart(2, '0');
     return `
-<section id="${section.id}">
+<section id="${section.id}"${section.pdf === false ? ' class="no-print"' : ''}>
     <p class="section-label fade-in">// ${num}. ${esc(section.nav.toUpperCase())}</p>
     <h2 class="section-title fade-in">${esc(section.title)}</h2>
     ${inner}
@@ -319,6 +552,8 @@ function setupCountUp() {
         setTimeout(() => { e.target.textContent = text; }, 1500);
     }), { threshold: 0.6 });
     els.forEach(({ el }) => obs.observe(el));
+    // Stats that were never scrolled into view would otherwise print as 0
+    addEventListener('beforeprint', () => els.forEach(({ el, text }) => { obs.unobserve(el); el.textContent = text; }));
 }
 
 // Colour names map to the --c-* custom properties in style.css
@@ -405,7 +640,8 @@ function archHtml(diagram) {
     const stages = diagram.stages.map((s, i) => {
         const kind = ARCH_KINDS[s.kind] ? s.kind : 'service';
         kindsUsed.add(kind);
-        const arrow = i ? `<div class="arch-arrow" aria-hidden="true">${s.via ? `<span>${esc(s.via)}</span>` : ''}</div>` : '';
+        // --i staggers the flowing data pulse so it travels stage by stage
+        const arrow = i ? `<div class="arch-arrow" aria-hidden="true" style="--i:${i - 1}">${s.via ? `<span>${esc(s.via)}</span>` : ''}</div>` : '';
         const nodes = s.nodes.map(node).map(n =>
             `<div class="arch-node"><span class="arch-node-label">${esc(n.label)}</span>${n.sub ? `<span class="arch-node-sub">${esc(n.sub)}</span>` : ''}</div>`).join('');
         return `${arrow}<div class="arch-stage arch-${kind}">${nodes}</div>`;
@@ -546,6 +782,15 @@ function setupExperienceControls(data) {
         syncToggle();
     });
     details.forEach(d => d.addEventListener('toggle', syncToggle));
+
+    // Printing always shows every project fully expanded; the reader's open/closed state comes back afterwards
+    let openBeforePrint = [];
+    addEventListener('beforeprint', () => {
+        apply(-1);
+        openBeforePrint = details.map(d => d.open);
+        details.forEach(d => { d.open = true; });
+    });
+    addEventListener('afterprint', () => details.forEach((d, i) => { d.open = openBeforePrint[i]; }));
 }
 
 function renderEducation(data) {
@@ -570,6 +815,13 @@ function renderContact(data) {
         ${data.email ? `<p class="contact-email"><a class="text-link" href="mailto:${esc(data.email)}">✉ ${esc(data.email)}</a></p>` : ''}
         <div class="contact-links">${links}</div>
     </div>`;
+}
+
+// Contact line under the name, shown only on paper (the Contact section itself isn't printed)
+function printContactHtml(data) {
+    const site  = new URL(document.querySelector('link[rel="canonical"]')?.href || location.href).hostname;
+    const items = [site, data.email, ...data.links.map(l => l.href.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, ''))];
+    return `<p class="print-only print-contact">${items.filter(Boolean).map(esc).join('  ·  ')}</p>`;
 }
 
 const RENDERERS = { about: renderAbout, skills: renderSkills, experience: renderExperience, education: renderEducation, contact: renderContact };
@@ -597,6 +849,10 @@ async function init() {
 
     renderNav(manager.sections);
     renderHero(hero);
+    decodeHeroName();
+    setupTabTitle();
+    setupKonami();
+    consoleHello();
     document.getElementById('footer-year').textContent = new Date().getFullYear();
 
     // Fetch all sections up front so About can derive stats from Experience
@@ -610,6 +866,7 @@ async function init() {
         if (!renderer) continue;
         container.insertAdjacentHTML('beforeend', sectionHtml(section, i + 1, renderer(datas[i], ctx)));
     }
+    if (ctx.contact) document.getElementById('home').insertAdjacentHTML('beforeend', printContactHtml(ctx.contact));
 
     setupFadeIn();
     setupCountUp();

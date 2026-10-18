@@ -117,6 +117,30 @@ section:first-of-type { padding-top: 10rem; }
     line-height: 1.05;
     letter-spacing: -0.03em;
     margin-bottom: 2rem;
+    /* Shrink to the text so the glow below centres on the name; isolate keeps the glow above the page */
+    position: relative;
+    width: fit-content;
+    isolation: isolate;
+}
+/* Blurred gold glow that blooms out from behind the name while it decodes, then settles */
+.hero-name::before {
+    content: '';
+    position: absolute;
+    inset: -30% -12%;
+    z-index: -1;
+    background: radial-gradient(ellipse at 60% 50%,
+        color-mix(in srgb, var(--accent) 30%, transparent) 0%,
+        color-mix(in srgb, var(--accent) 10%, transparent) 45%,
+        transparent 70%);
+    filter: blur(28px);
+    pointer-events: none;
+    /* Matches the name decode in index.html (~2.8s) */
+    animation: hero-glow 2.8s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+@keyframes hero-glow {
+    0%   { opacity: 0; scale: 0.3 0.5; filter: blur(8px); }
+    55%  { opacity: 1; }
+    100% { opacity: 0.7; scale: 1; filter: blur(28px); }
 }
 .hero-name span {
     background: linear-gradient(135deg, var(--accent) 0%, var(--accent2) 60%);
@@ -191,6 +215,17 @@ section:first-of-type { padding-top: 10rem; }
     caret-color: var(--accent);
 }
 .term-input::placeholder { color: color-mix(in srgb, var(--muted) 50%, transparent); }
+.term-err { color: #c9604f; }
+.term-art { color: var(--accent); }
+.term-swatch { display: inline-block; width: 1.6em; height: 0.9em; margin-right: 3px; vertical-align: middle; border-radius: 2px; }
+/* rm -rf / easter egg */
+.term.is-crashed { border-color: #c9604f; animation: term-shake 0.3s steps(2) 4; }
+.term.is-crashed .term-body { filter: hue-rotate(140deg) saturate(1.6); }
+@keyframes term-shake {
+    25% { transform: translate(-3px, 1px); }
+    50% { transform: translate(3px, -1px); }
+    75% { transform: translate(-2px, -1px); }
+}
 /* Once the prompt is live, the typed-line caret is no longer needed */
 .term:has(.term-input-row:not([hidden])) .term-cmd::after { display: none; }
 .hero-cta {
@@ -366,13 +401,14 @@ section:first-of-type { padding-top: 10rem; }
 .timeline-content::before {
     content: '';
     position: absolute;
-    left: -1px;
+    /* Back across the 2rem column gap and half the dot's width so it's centred on the line at 180px.
+       (Kept out of `transform`, which the scroll animation's `scale` would multiply and shift.) */
+    left: calc(-2rem - 3px);
     top: 2.75rem;
     width: 7px; height: 7px;
     background: var(--accent);
     border-radius: 50%;
     box-shadow: 0 0 10px var(--accent);
-    transform: translateX(-3px);
 }
 .exp-role {
     font-size: 1.45rem;
@@ -698,6 +734,32 @@ footer {
     border-top: 4.5px solid transparent;
     border-bottom: 4.5px solid transparent;
 }
+/* A pulse of "data" travels along each arrow; --i (set per arrow) delays it so it moves stage by stage */
+.arch-arrow::before {
+    content: '';
+    position: absolute;
+    top: -2px; left: 0;
+    width: 5px; height: 5px;
+    border-radius: 50%;
+    background: var(--accent);
+    box-shadow: 0 0 6px var(--accent);
+    opacity: 0;
+    animation: arch-flow 2.4s linear infinite;
+    /* 40% of the 2.4s cycle: the next arrow's pulse starts just as this one arrives */
+    animation-delay: calc(var(--i, 0) * 0.96s);
+}
+@keyframes arch-flow {
+    0%       { left: 0; opacity: 0; }
+    5%       { opacity: 1; }
+    40%      { left: calc(100% - 7px); opacity: 1; }
+    45%, 100% { left: calc(100% - 7px); opacity: 0; }
+}
+@keyframes arch-flow-down {
+    0%       { top: 0; opacity: 0; }
+    5%       { opacity: 1; }
+    40%      { top: calc(100% - 7px); opacity: 1; }
+    45%, 100% { top: calc(100% - 7px); opacity: 0; }
+}
 .arch-arrow span {
     position: absolute;
     bottom: 5px;
@@ -727,7 +789,18 @@ footer {
     .arch-arrow, .arch-arrow:has(span) { flex: 0 0 26px; width: 1px; height: auto; margin: 5px 0; align-self: center; }
     .arch-arrow::after { right: auto; top: auto; left: -4px; bottom: -1px; border: 4.5px solid transparent; border-top: 6px solid var(--line); border-bottom: 0; }
     .arch-arrow span { bottom: auto; top: 50%; left: 10px; right: auto; transform: translateY(-50%); white-space: nowrap; }
+    .arch-arrow::before { left: -2px; animation-name: arch-flow-down; }
 }
+
+/* ── MATRIX RAIN (Konami code / `matrix`) ── */
+.matrix-rain {
+    position: fixed;
+    inset: 0;
+    z-index: 1000;
+    cursor: pointer;
+    transition: opacity 0.8s;
+}
+.matrix-rain.is-leaving { opacity: 0; }
 
 /* ── WORKED WITH ── */
 .people-wall { margin-top: 2.5rem; }
@@ -779,6 +852,45 @@ footer {
 }
 .fade-in.visible { opacity: 1; transform: none; }
 
+/* ── TIMELINE SCROLL PROGRESS ──
+   As the middle of the screen passes down a timeline, its line fills with gold, the item
+   under it gets a larger dot and a brighter title, and items not reached yet keep a faint dot.
+   Browsers without scroll-driven animations keep the static timeline. */
+@supports (animation-timeline: view()) {
+    .timeline-item {
+        view-timeline: --tl-item block;
+        /* Shrink the timeline's "viewport" to a thin band across the middle of the screen,
+           so cover 0% → 100% runs from the item's top to its bottom crossing that band */
+        view-timeline-inset: calc(50% - 1px) calc(50% - 1px);
+    }
+    .timeline-item::after {
+        content: '';
+        position: absolute;
+        left: 180px;
+        top: 0; bottom: 0;
+        width: 1px;
+        background: var(--accent);
+        box-shadow: 0 0 6px var(--accent);
+        transform-origin: top;
+        scale: 1 0;
+    }
+    .timeline-item::after, .timeline-content::before, .timeline-item .exp-role {
+        animation: linear both;
+        animation-timeline: --tl-item;
+        animation-range: cover 0% cover 100%;
+    }
+    .timeline-item::after { animation-name: tl-fill; }
+    .timeline-content::before { animation-name: tl-dot; }
+    .timeline-item .exp-role { animation-name: tl-title; }
+}
+@keyframes tl-fill { to { scale: 1 1; } }
+@keyframes tl-dot {
+    0%      { opacity: 0.35; box-shadow: none; }
+    5%, 90% { opacity: 1; scale: 1.8; box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 25%, transparent), 0 0 14px var(--accent); }
+    100%    { opacity: 1; }
+}
+@keyframes tl-title { 5%, 90% { color: var(--accent2); } }
+
 /* ── RESPONSIVE ── */
 @media (max-width: 680px) {
     nav { padding: 1rem 1.25rem; gap: 1rem; }
@@ -789,7 +901,7 @@ footer {
     .hero-bottom { flex-direction: column; align-items: flex-start; }
     .about-grid { grid-template-columns: 1fr; }
     .timeline-item { grid-template-columns: 1fr; }
-    .timeline-item::before { display: none; }
+    .timeline-item::before, .timeline-item::after { display: none; }
     .timeline-date { padding: 2rem 0 0; text-align: left; }
     .timeline-content { padding-left: 0; }
     .timeline-content::before { display: none; }
@@ -797,6 +909,7 @@ footer {
     .term { font-size: 13px; }
     .term-body { padding: 0.9rem 1rem 0.2rem; max-height: 300px; }
     .term-input-row { padding: 0.35rem 1rem 0.9rem; }
+    .term-art { display: none; }
     .exp-toolbar { flex-direction: column; }
     .company-header { flex-direction: column; align-items: flex-start; gap: 0.4rem; padding: 1rem 1.2rem; }
     .company-tenure { font-size: 12px; }
@@ -815,6 +928,79 @@ footer {
     html { scroll-behavior: auto; }
     .fade-in { opacity: 1; transform: none; transition: none; }
     .term-cmd::after { animation: none; }
+    .hero-name::before { animation: none; opacity: 0.7; }
+    .term.is-crashed { animation: none; }
+    .arch-arrow::before { display: none; }
+    .timeline-item::after { display: none; }
+    .timeline-content::before, .timeline-item .exp-role { animation: none; }
     .exp-details summary::before { transition: none; }
     .timeline-item.is-flash .timeline-content { animation: none; outline: 1px solid var(--accent); outline-offset: 4px; }
+}
+
+/* Paper-only elements, e.g. the contact line under the name */
+.print-only { display: none; }
+
+/* ── PRINT ──
+   Ctrl+P (or `cat resume.pdf` in the terminal) gives a clean light resume:
+   no nav, terminal, filters, charts or animations, and every project expanded */
+@media print {
+    :root {
+        --bg: #fff; --bg2: #fff; --bg3: #fff; --surface: #fff;
+        --grid: transparent;
+        --border: #d6d9de;
+        --border-hover: #d6d9de;
+        --accent: #8a6a1f;
+        --text: #111;
+        --muted: #3c4450;
+        --c-blue: #3d5f86; --c-purple: #5f4a8a; --c-green: #3f6f4f; --c-orange: #8a5530;
+    }
+    @page { margin: 14mm 14mm 16mm; }
+    body { font-size: 10.5pt; line-height: 1.5; }
+    body::before, nav, footer, .no-print, .hero-name::before,
+    .term, .hero-bottom, .exp-toolbar, .gantt, .exp-filter-empty,
+    .exp-details summary, .arch-wrap, .people-wall, .person-card { display: none !important; }
+    .print-only { display: block; }
+
+    section, section:first-of-type { max-width: none; padding: 0 0 1.2rem; }
+    .fade-in { opacity: 1 !important; transform: none !important; transition: none !important; }
+
+    .hero-eyebrow { margin-bottom: 0.3rem; }
+    .hero-name { font-size: 26pt; margin-bottom: 0.3rem; }
+    /* Gradient text needs a background, which browsers drop when printing */
+    .hero-name span { background: none; -webkit-text-fill-color: currentColor; color: var(--accent); }
+    .print-contact { font-family: var(--mono); font-size: 9pt; color: var(--muted); }
+
+    .section-label { font-size: 9pt; margin-bottom: 0.1rem; break-after: avoid; }
+    .section-title { font-size: 16pt; margin-bottom: 0.8rem; break-after: avoid; }
+    .about-grid { grid-template-columns: 2fr 1fr; gap: 1.5rem; }
+    .about-text { font-size: 10.5pt; line-height: 1.6; }
+    .stat-cell { padding: 0.6rem 0.8rem; }
+    .stat-num { font-size: 18pt; }
+    .stat-label { font-size: 8pt; }
+    .skills-grid { grid-template-columns: repeat(4, 1fr); break-inside: avoid; }
+    .skill-group { padding: 0.8rem 1rem; }
+    .skill-group-title { font-size: 8pt; margin-bottom: 0.4rem; }
+    .skill-list { gap: 0.15rem; }
+    .skill-list li { font-size: 9.5pt; line-height: 1.35; }
+
+    .company-header { padding: 0.5rem 0.8rem; break-after: avoid; }
+    .company-name { font-size: 13pt; }
+    .company-logo { filter: none; }
+    .company-tenure { font-size: 9pt; }
+    /* Projects may split across pages, but a heading never strands at the bottom of one */
+    .timeline-item { grid-template-columns: 120px 1fr; gap: 0 1rem; }
+    .timeline-item::before, .timeline-item::after, .timeline-content::before { display: none; }
+    .exp-role { animation: none !important; }
+    .timeline-date { font-size: 8.5pt; padding: 0.6rem 0 0; text-align: left; }
+    .timeline-content { padding: 0.4rem 0 0.5rem; }
+    .exp-role { font-size: 11.5pt; margin-bottom: 0.1rem; break-after: avoid; }
+    .exp-role-sub { font-size: 8.5pt; break-after: avoid; }
+    .exp-summary { font-size: 9.5pt; line-height: 1.45; margin: 0.3rem 0; padding-left: 0.7rem; }
+    .exp-tags { margin-bottom: 0.3rem; }
+    .tag { font-size: 7.5pt; padding: 0.05rem 0.4rem; }
+    .exp-bullets { gap: 0.15rem; }
+    .exp-bullets li { font-size: 9pt; line-height: 1.4; break-inside: avoid; }
+    .exp-details[open] .exp-bullets { margin-top: 0.3rem; }
+    .text-link { border-bottom: 0; }
+    a { color: inherit; }
 }
