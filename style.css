@@ -100,7 +100,6 @@ section:first-of-type { padding-top: 10rem; }
     align-items: flex-start;
     gap: 1.5rem;
     margin-top: 2rem;
-    max-width: 820px; /* line the CTA up with the terminal's right edge */
 }
 .hero-cta {
     align-self: flex-end;
@@ -127,7 +126,6 @@ section:first-of-type { padding-top: 10rem; }
 
 /* ── HERO TERMINAL ── */
 .term {
-    max-width: 820px;
     background: color-mix(in srgb, var(--bg) 70%, #000);
     border: 1px solid var(--border);
     border-radius: 10px;
