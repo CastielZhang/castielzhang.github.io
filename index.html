@@ -6,7 +6,7 @@
     <title>Castiel Zhang — Software Engineer</title>
     <meta name="description" content="Castiel Zhang — Software Engineer at UTS Rapido, Sydney. Full-stack development, Linux & systems engineering, and AI-powered data pipelines." />
     <meta name="author" content="Castiel Zhang" />
-    <meta name="theme-color" content="#080c10" />
+    <meta name="theme-color" content="#0a0908" />
     <link rel="canonical" href="https://castiel.au/" />
 
     <!-- Link previews (LinkedIn, Facebook, WeChat, Slack, iMessage…) -->
@@ -128,11 +128,12 @@ function renderAbout(data, ctx) {
     </div>`;
 }
 
-const SKILL_COLORS = { blue: '#63caff', orange: '#fb923c', purple: '#a78bfa', green: '#34d399' };
+// Colour names map to the --c-* custom properties in style.css
+const SKILL_COLORS = ['blue', 'orange', 'purple', 'green'];
 
 function renderSkills(data) {
     const groups = data.groups.map(g => {
-        const color = SKILL_COLORS[g.color] || SKILL_COLORS.purple;
+        const color = `var(--c-${SKILL_COLORS.includes(g.color) ? g.color : 'purple'})`;
         return `
         <div class="skill-group" style="--skill-color: ${color}">
             <p class="skill-group-title">${esc(g.title)}</p>
