@@ -588,6 +588,191 @@ footer {
     border-top: 1px solid var(--border);
 }
 
+/* ── GANTT TIMELINE ── */
+.gantt {
+    --row: 24px;
+    padding: 1.1rem 1.8rem 0.9rem;
+    border: 1px solid var(--border);
+    border-top: 0;
+    border-radius: 0 0 4px 4px;
+    background: color-mix(in srgb, var(--surface) 45%, transparent);
+}
+.gantt-rows { display: flex; flex-direction: column; gap: 6px; }
+.gantt-row, .gantt-axis {
+    display: grid;
+    grid-template-columns: 110px 1fr;
+    gap: 1rem;
+    align-items: center;
+}
+.gantt-row { height: var(--row); transition: opacity 0.2s; }
+.gantt-label {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--muted);
+    text-align: right;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.gantt-track { position: relative; height: 100%; }
+.gantt-row .gantt-track { background: linear-gradient(transparent calc(50% - 0.5px), var(--border) calc(50% - 0.5px), var(--border) calc(50% + 0.5px), transparent calc(50% + 0.5px)); }
+.gantt-bar {
+    position: absolute;
+    top: 50%;
+    height: 12px;
+    min-width: 6px;
+    transform: translateY(-50%);
+    border: 0;
+    border-radius: 6px;
+    background: var(--accent);
+    opacity: 0.85;
+    cursor: pointer;
+    transition: opacity 0.15s, box-shadow 0.15s, background 0.2s;
+}
+.gantt-bar:hover, .gantt-bar:focus-visible { opacity: 1; box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 30%, transparent); outline: none; }
+.gantt-bar.is-ongoing { background: linear-gradient(90deg, var(--accent) 75%, color-mix(in srgb, var(--accent) 25%, transparent)); }
+.gantt-row.is-dim { opacity: 0.35; }
+.gantt-row.is-dim .gantt-bar { background: var(--muted); }
+.gantt-axis { margin-top: 0.5rem; height: 18px; }
+.gantt-tick {
+    position: absolute;
+    top: 0;
+    transform: translateX(-50%);
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--muted);
+}
+/* Year gridline running up through the rows */
+.gantt-tick::before {
+    content: '';
+    position: absolute;
+    left: 50%;
+    bottom: calc(100% + 2px);
+    height: calc(var(--rows, 8) * (var(--row) + 6px));
+    border-left: 1px dashed var(--border);
+}
+/* Brief highlight on the project a bar jumped to */
+.timeline-item.is-flash .timeline-content { animation: item-flash 1.6s ease-out; }
+@keyframes item-flash {
+    from { background: color-mix(in srgb, var(--accent) 12%, transparent); }
+    to   { background: transparent; }
+}
+
+/* ── ARCHITECTURE DIAGRAMS ── */
+.exp-details { container-type: inline-size; }
+.exp-details-hint { font-size: 11px; color: var(--accent); opacity: 0.8; }
+.arch-wrap {
+    margin: 1rem 0 0.4rem;
+    padding: 1.1rem 1rem 0.8rem;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: color-mix(in srgb, var(--bg) 60%, transparent);
+}
+.arch { display: flex; align-items: center; }
+.arch-stage { flex: 1 1 0; min-width: 0; display: flex; flex-direction: column; gap: 0.4rem; }
+.arch-service { --k: var(--c-blue); }
+.arch-data    { --k: var(--c-green); }
+.arch-device  { --k: var(--c-orange); }
+.arch-node {
+    padding: 0.45rem 0.5rem;
+    text-align: center;
+    border: 1px solid color-mix(in srgb, var(--k) 45%, transparent);
+    border-radius: 6px;
+    background: color-mix(in srgb, var(--k) 8%, transparent);
+}
+.arch-node-label { display: block; font-size: 12.5px; font-weight: 600; color: var(--text); line-height: 1.3; }
+.arch-node-sub   { display: block; margin-top: 0.15rem; font-family: var(--mono); font-size: 10.5px; color: var(--muted); line-height: 1.3; }
+.arch-arrow {
+    --line: color-mix(in srgb, var(--muted) 55%, transparent);
+    position: relative;
+    flex: 0 0 30px;
+    height: 1px;
+    margin: 0 5px;
+    background: var(--line);
+}
+.arch-arrow:has(span) { flex-basis: 66px; }
+.arch-arrow::after {
+    content: '';
+    position: absolute;
+    right: -1px;
+    top: -4px;
+    border-left: 6px solid var(--line);
+    border-top: 4.5px solid transparent;
+    border-bottom: 4.5px solid transparent;
+}
+.arch-arrow span {
+    position: absolute;
+    bottom: 5px;
+    left: 0; right: 0;
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 9.5px;
+    line-height: 1.2;
+    color: var(--accent);
+}
+.arch-legend { display: flex; flex-wrap: wrap; gap: 0.4rem 1.2rem; margin-top: 0.9rem; font-family: var(--mono); font-size: 11px; color: var(--muted); }
+.arch-key::before {
+    content: '';
+    display: inline-block;
+    width: 9px; height: 9px;
+    margin-right: 0.4rem;
+    vertical-align: -1px;
+    border-radius: 2px;
+    border: 1px solid var(--k);
+    background: color-mix(in srgb, var(--k) 25%, transparent);
+}
+/* Narrow containers: flow top-to-bottom, parallel boxes side by side */
+@container (max-width: 600px) {
+    .arch { flex-direction: column; align-items: stretch; }
+    .arch-stage { flex-direction: row; flex-wrap: wrap; }
+    .arch-node { flex: 1 1 0; }
+    .arch-arrow, .arch-arrow:has(span) { flex: 0 0 26px; width: 1px; height: auto; margin: 5px 0; align-self: center; }
+    .arch-arrow::after { right: auto; top: auto; left: -4px; bottom: -1px; border: 4.5px solid transparent; border-top: 6px solid var(--line); border-bottom: 0; }
+    .arch-arrow span { bottom: auto; top: 50%; left: 10px; right: auto; transform: translateY(-50%); white-space: nowrap; }
+}
+
+/* ── WORKED WITH ── */
+.people-wall { margin-top: 2.5rem; }
+.people-wall-label {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--muted);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 1rem;
+}
+.people-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+    gap: 1px;
+    background: var(--border);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+}
+.person-tile {
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    padding: 1.1rem 1.2rem;
+    background: var(--surface);
+    text-decoration: none;
+    transition: background 0.2s;
+}
+.person-tile:hover { background: color-mix(in srgb, var(--accent) 7%, var(--surface)); }
+.person-tile img {
+    width: 54px; height: 54px;
+    flex-shrink: 0;
+    border-radius: 50%;
+    object-fit: cover;
+    border: 1px solid var(--border-hover);
+}
+.person-tile-text { display: flex; flex-direction: column; min-width: 0; line-height: 1.35; }
+.person-tile-name     { font-size: 14.5px; font-weight: 600; color: var(--text); }
+.person-tile-title    { font-size: 12.5px; color: var(--accent); margin-top: 0.1rem; }
+.person-tile-dept     { font-family: var(--mono); font-size: 11px; color: var(--muted); margin-top: 0.1rem; }
+.person-tile-projects { font-family: var(--mono); font-size: 11px; color: var(--c-blue); margin-top: 0.35rem; }
+
 /* ── FADE IN ── */
 .fade-in {
     opacity: 0;
@@ -615,6 +800,11 @@ footer {
     .term-body { padding: 0.9rem 1rem 0.2rem; max-height: 300px; }
     .term-input-row { padding: 0.35rem 1rem 0.9rem; }
     .exp-toolbar { flex-direction: column; }
+    .company-header { flex-direction: column; align-items: flex-start; gap: 0.4rem; padding: 1rem 1.2rem; }
+    .company-tenure { font-size: 12px; }
+    .gantt { padding: 0.9rem 0.9rem 0.7rem; }
+    .gantt-row, .gantt-axis { grid-template-columns: 78px 1fr; gap: 0.6rem; }
+    .gantt-label { font-size: 10.5px; }
 }
 
 /* Touch screens can't hover: drop the cards so their invisible boxes don't widen the page */
@@ -628,4 +818,5 @@ footer {
     .fade-in { opacity: 1; transform: none; transition: none; }
     .term-cmd::after { animation: none; }
     .exp-details summary::before { transition: none; }
+    .timeline-item.is-flash .timeline-content { animation: none; outline: 1px solid var(--accent); outline-offset: 4px; }
 }

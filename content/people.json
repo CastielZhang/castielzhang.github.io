@@ -1,0 +1,30 @@
+{
+  "rizoiu": {
+    "name": "Prof. Marian-Andrei Rizoiu",
+    "title": "Director, Defence Innovation Network",
+    "dept": "Data Science Institute",
+    "photo": "content/sections/icons/rizoiu.png",
+    "href": "https://profiles.uts.edu.au/Marian-Andrei.Rizoiu"
+  },
+  "devitt": {
+    "name": "Prof. Simon Devitt",
+    "title": "Research Director",
+    "dept": "School of Computer Science",
+    "photo": "content/sections/icons/devitt.jpg",
+    "href": "https://profiles.uts.edu.au/Simon.Devitt"
+  },
+  "do": {
+    "name": "Thomas Do",
+    "title": "Adjunct Fellow",
+    "dept": "Australian Artificial Intelligence Institute",
+    "photo": "content/sections/icons/do.webp",
+    "href": "https://profiles.uts.edu.au/Thomas.Do/about"
+  },
+  "wang": {
+    "name": "Dr Yu-Kai Wang",
+    "title": "Senior Lecturer",
+    "dept": "School of Computer Science",
+    "photo": "content/sections/icons/wang.jpg",
+    "href": "https://profiles.uts.edu.au/YuKai.Wang"
+  }
+}

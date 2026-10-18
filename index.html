@@ -43,7 +43,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
     <!-- Bump ?v= whenever style.css changes so browsers drop their cached copy -->
-    <link rel="stylesheet" href="style.css?v=9" />
+    <link rel="stylesheet" href="style.css?v=11" />
     <link rel="icon" href="favicon.ico" sizes="any" />
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
     <link rel="apple-touch-icon" href="apple-touch-icon.png" />
@@ -68,6 +68,25 @@ const esc = s => String(s)
     .replace(/&/g, '&amp;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;');
+
+// ── People ───────────────────────────────────────────────────────────────────
+// Collaborators live in content/people.json; content text refers to them as {{key}}
+
+let PEOPLE = {};
+const PERSON_TOKEN = /\{\{(\w+)\}\}/g;
+
+function personLinkHtml(p) {
+    return `<a class="text-link person-link" href="${esc(p.href)}" target="_blank">${esc(p.name)}<span class="person-card">`
+         + `<img src="${esc(p.photo)}" alt=""><span class="person-card-text">`
+         + `<span class="person-card-name">${esc(p.name)}</span>`
+         + `<span class="person-card-title">${esc(p.title)}</span>`
+         + `<span class="person-card-dept">${esc(p.dept)}</span></span></span></a>`;
+}
+
+// Expands {{key}} tokens into hover-card links
+const richText = s => String(s).replace(PERSON_TOKEN, (m, k) => PEOPLE[k] ? personLinkHtml(PEOPLE[k]) : m);
+// Plain-text version for the terminal
+const plainText = s => String(s).replace(PERSON_TOKEN, (m, k) => PEOPLE[k] ? PEOPLE[k].name : m).replace(/<[^>]+>/g, '');
 
 // ── Nav ──────────────────────────────────────────────────────────────────────
 
@@ -105,7 +124,6 @@ function renderHero(data) {
 
 const REDUCED_MOTION = matchMedia('(prefers-reduced-motion: reduce)').matches;
 const sleep = ms => new Promise(r => setTimeout(r, REDUCED_MOTION ? 0 : ms));
-const stripTags = s => String(s).replace(/<[^>]+>/g, '');
 
 const term = {
     body: null, user: '', commands: {}, history: [], histPos: 0,
@@ -169,7 +187,7 @@ function setupTerminal(hero, sections, ctx) {
             row('cd <name>', 'jump to a section, e.g. cd experience'),
             row('clear', 'clear the screen'),
         ]),
-        about: () => term.print(ctx.about.paragraphs.map(p => esc(stripTags(p)))),
+        about: () => term.print(ctx.about.paragraphs.map(p => esc(plainText(p)))),
         projects: () => term.print(sortByStart(ctx.experience.items).map(i =>
             `<span class="term-dim">${esc(formatDate(i.date).padEnd(22))}</span>${esc(i.name)}`)),
         skills: () => term.print(ctx.skills.groups.map(g => row(g.title, esc(g.items.join(', '))))),
@@ -232,17 +250,75 @@ const AUTO_STATS = {
 };
 
 function renderAbout(data, ctx) {
-    const paras = data.paragraphs.map(p => `<p>${p}</p>`).join('');
+    const paras = data.paragraphs.map(p => `<p>${richText(p)}</p>`).join('');
     const stats = data.stats.map(s => `
         <div class="stat-cell">
-            <div class="stat-num">${esc(s.auto ? AUTO_STATS[s.auto](ctx) : s.value)}</div>
+            <div class="stat-num" data-count>${esc(s.auto ? AUTO_STATS[s.auto](ctx) : s.value)}</div>
             <div class="stat-label">${esc(s.label)}</div>
         </div>`).join('');
     return `
     <div class="about-grid fade-in">
         <div class="about-text">${paras}</div>
         <div class="about-stats">${stats}</div>
+    </div>
+    ${peopleWallHtml(ctx)}`;
+}
+
+// Everyone referenced as {{key}} in Experience/Education, tagged with the projects they appear in
+function peopleWallHtml(ctx) {
+    const seen = new Map();
+    const items = [...sortByStart(ctx.experience?.items || []), ...(ctx.education?.items || [])];
+    for (const item of items) {
+        const text = [item.summary, ...(item.bullets || [])].join(' ');
+        for (const [, key] of text.matchAll(PERSON_TOKEN)) {
+            if (!PEOPLE[key]) continue;
+            if (!seen.has(key)) seen.set(key, new Set());
+            seen.get(key).add(item.short || item.name || item.role);
+        }
+    }
+    if (!seen.size) return '';
+    const tiles = [...seen].map(([key, projects]) => {
+        const p = PEOPLE[key];
+        return `
+        <a class="person-tile" href="${esc(p.href)}" target="_blank">
+            <img src="${esc(p.photo)}" alt="" loading="lazy">
+            <span class="person-tile-text">
+                <span class="person-tile-name">${esc(p.name)}</span>
+                <span class="person-tile-title">${esc(p.title)}</span>
+                <span class="person-tile-dept">${esc(p.dept)}</span>
+                <span class="person-tile-projects">${[...projects].map(esc).join(' · ')}</span>
+            </span>
+        </a>`;
+    }).join('');
+    return `
+    <div class="people-wall fade-in">
+        <p class="people-wall-label">Worked with</p>
+        <div class="people-grid">${tiles}</div>
     </div>`;
+}
+
+// Stat numbers count up from 0 the first time they scroll into view
+function setupCountUp() {
+    if (REDUCED_MOTION) return;
+    const els = [...document.querySelectorAll('[data-count]')]
+        .map(el => ({ el, text: el.textContent.trim() }))
+        .filter(({ text }) => /^\d+(\.\d+)?$/.test(text));
+    els.forEach(({ el }) => { el.textContent = '0'; });
+    const obs = new IntersectionObserver(entries => entries.forEach(e => {
+        if (!e.isIntersecting) return;
+        obs.unobserve(e.target);
+        const { text } = els.find(x => x.el === e.target);
+        const target = parseFloat(text), decimals = (text.split('.')[1] || '').length, t0 = performance.now();
+        const tick = now => {
+            const k = Math.min(1, (now - t0) / 1200), eased = 1 - Math.pow(1 - k, 3);
+            e.target.textContent = (target * eased).toFixed(decimals);
+            if (k < 1) requestAnimationFrame(tick); else e.target.textContent = text;
+        };
+        requestAnimationFrame(tick);
+        // Safety net: rAF pauses in background tabs, so make sure the final value always lands
+        setTimeout(() => { e.target.textContent = text; }, 1500);
+    }), { threshold: 0.6 });
+    els.forEach(({ el }) => obs.observe(el));
 }
 
 // Colour names map to the --c-* custom properties in style.css
@@ -293,26 +369,55 @@ function formatTenure(tenure) {
 }
 
 // Experience items render with a summary and collapsible bullets; education items show bullets inline
-function timelineItemHtml(item, isProject) {
+function timelineItemHtml(item, isProject, id = '') {
     const tags = item.tags.map(t =>
         `<span class="tag tag-${t.color}">${esc(t.text)}</span>`).join('');
-    const bullets = item.bullets.map(b => `<li>${b}</li>`).join('');
+    const bullets = item.bullets.map(b => `<li>${richText(b)}</li>`).join('');
     const list    = bullets ? `<ul class="exp-bullets">${bullets}</ul>` : '';
+    const diagram = isProject && item.diagram ? archHtml(item.diagram) : '';
     const roleParts = item.name ? [item.role, item.type, item.location].filter(Boolean) : [];
     const tagData   = esc(JSON.stringify(item.tags.map(t => t.text))).replace(/"/g, '&quot;');
     return `
-    <div class="timeline-item fade-in" data-tags="${tagData}">
+    <div class="timeline-item fade-in"${id ? ` id="${id}"` : ''} data-tags="${tagData}">
         <div class="timeline-date">${esc(typeof item.date === 'object' ? formatDate(item.date) : item.date)}</div>
         <div class="timeline-content">
             <p class="exp-role">${esc(item.name || item.role)}</p>
             ${roleParts.length ? `<p class="exp-role-sub">${roleParts.map(esc).join(' · ')}</p>` : ''}
-            ${isProject && item.summary ? `<p class="exp-summary">${item.summary}</p>` : ''}
+            ${isProject && item.summary ? `<p class="exp-summary">${richText(item.summary)}</p>` : ''}
             ${tags ? `<div class="exp-tags">${tags}</div>` : ''}
-            ${isProject && list
-                ? `<details class="exp-details"><summary>Details <span class="exp-details-count">${item.bullets.length}</span></summary>${list}</details>`
+            ${isProject && (list || diagram)
+                ? `<details class="exp-details"><summary>Details <span class="exp-details-count">${item.bullets.length}</span>`
+                  + `${diagram ? '<span class="exp-details-hint">+ architecture</span>' : ''}</summary>${diagram}${list}</details>`
                 : list}
         </div>
     </div>`;
+}
+
+// ── Architecture diagrams ─────────────────────────────────────────────────────
+// A left-to-right flow of stages; a stage with several nodes is drawn as parallel boxes.
+// kind: "service" (default) | "data" | "device"; "via" labels the arrow into a stage.
+
+const ARCH_KINDS = { service: 'Process', data: 'Data / external', device: 'Hardware / workers' };
+
+function archHtml(diagram) {
+    const node = n => typeof n === 'string' ? { label: n } : n;
+    const kindsUsed = new Set();
+    const stages = diagram.stages.map((s, i) => {
+        const kind = ARCH_KINDS[s.kind] ? s.kind : 'service';
+        kindsUsed.add(kind);
+        const arrow = i ? `<div class="arch-arrow" aria-hidden="true">${s.via ? `<span>${esc(s.via)}</span>` : ''}</div>` : '';
+        const nodes = s.nodes.map(node).map(n =>
+            `<div class="arch-node"><span class="arch-node-label">${esc(n.label)}</span>${n.sub ? `<span class="arch-node-sub">${esc(n.sub)}</span>` : ''}</div>`).join('');
+        return `${arrow}<div class="arch-stage arch-${kind}">${nodes}</div>`;
+    }).join('');
+    const label = diagram.stages.map(s => s.nodes.map(n => node(n).label).join(' / ')).join(' → ');
+    const legend = Object.keys(ARCH_KINDS).filter(k => kindsUsed.has(k))
+        .map(k => `<span class="arch-key arch-${k}">${ARCH_KINDS[k]}</span>`).join('');
+    return `
+    <figure class="arch-wrap">
+        <div class="arch" role="img" aria-label="Architecture: ${esc(label)}">${stages}</div>
+        <figcaption class="arch-legend">${legend}</figcaption>
+    </figure>`;
 }
 
 const sortByStart = items => [...items].sort((a, b) => {
@@ -320,9 +425,42 @@ const sortByStart = items => [...items].sort((a, b) => {
     return (MONTH_NUM[b.date.start.month] || 0) - (MONTH_NUM[a.date.start.month] || 0);
 });
 
+// ── Gantt timeline ────────────────────────────────────────────────────────────
+// One bar per project on a shared month axis, so overlapping work is visible at a glance
+
+const monthIndex = d => d.year * 12 + (MONTH_NUM[d.month] || 1) - 1;
+const nowIndex   = () => { const n = new Date(); return n.getFullYear() * 12 + n.getMonth(); };
+
+function ganttHtml(sorted) {
+    const span  = i => [monthIndex(i.date.start), i.date.end ? monthIndex(i.date.end) + 1 : nowIndex() + 1];
+    const spans = sorted.map(span);
+    const min = Math.min(...spans.map(s => s[0])), max = Math.max(...spans.map(s => s[1]));
+    const pct = m => ((m - min) / (max - min) * 100).toFixed(2);
+    const firstYear = Math.floor(min / 12) + 1, lastYear = Math.floor((max - 1) / 12);
+    const ticks = [];
+    for (let y = firstYear; y <= lastYear; y++) ticks.push(`<span class="gantt-tick" style="left:${pct(y * 12)}%">${y}</span>`);
+    const rows = sorted.map((item, i) => {
+        const [s, e] = spans[i];
+        const title = `${item.name} · ${formatDate(item.date)}`;
+        return `
+        <div class="gantt-row" data-index="${i}">
+            <span class="gantt-label">${esc(item.short || item.name)}</span>
+            <div class="gantt-track">
+                <button type="button" class="gantt-bar${item.date.end ? '' : ' is-ongoing'}" data-index="${i}"
+                        style="left:${pct(s)}%;width:${pct(e) - pct(s)}%" title="${esc(title)}" aria-label="${esc(title)}"></button>
+            </div>
+        </div>`;
+    }).join('');
+    return `
+    <div class="gantt fade-in" style="--rows:${sorted.length}">
+        <div class="gantt-rows">${rows}</div>
+        <div class="gantt-axis"><span class="gantt-label"></span><div class="gantt-track">${ticks.join('')}</div></div>
+    </div>`;
+}
+
 function renderExperience(data) {
     const sorted = sortByStart(data.items);
-    const items = sorted.map(i => timelineItemHtml(i, true)).join('');
+    const items = sorted.map((item, i) => timelineItemHtml(item, true, `project-${i}`)).join('');
     const logo  = data.company.logo
         ? `<img class="company-logo" src="${data.company.logo}" alt="${esc(data.company.name)} logo">`
         : '';
@@ -343,6 +481,7 @@ function renderExperience(data) {
         <span class="company-name">${logo}${esc(data.company.name)}</span>
         <span class="company-tenure">${esc(formatTenure(data.company.tenure))}</span>
     </div>
+    ${ganttHtml(sorted)}
     <div class="timeline" id="exp-timeline">${items}</div>
     <p class="exp-filter-empty" hidden>No projects match this filter.</p>`;
 }
@@ -361,15 +500,27 @@ function setupExperienceControls(data) {
             c.classList.toggle('is-active', on);
             c.setAttribute('aria-pressed', on);
         });
-        items.forEach(el => {
+        items.forEach((el, i) => {
             const tags = JSON.parse(el.dataset.tags);
             const show = !match || tags.some(t => match.includes(t));
             el.hidden = !show;
             el.querySelectorAll('.tag').forEach(t => t.classList.toggle('is-match', !!match && match.includes(t.textContent)));
             if (show) el.classList.add('visible');
+            // Gantt rows stay in place (so the time axis keeps its context) but dim when filtered out
+            section.querySelector(`.gantt-row[data-index="${i}"]`)?.classList.toggle('is-dim', !show);
         });
         section.querySelector('.exp-filter-empty').hidden = items.some(el => !el.hidden);
     };
+
+    // Clicking a Gantt bar scrolls to its project (clearing a filter that hides it) and briefly highlights it
+    section.querySelectorAll('.gantt-bar').forEach(bar => bar.addEventListener('click', () => {
+        const el = items[Number(bar.dataset.index)];
+        if (el.hidden) apply(-1);
+        el.scrollIntoView({ behavior: REDUCED_MOTION ? 'auto' : 'smooth', block: 'center' });
+        el.classList.remove('is-flash');
+        void el.offsetWidth;
+        el.classList.add('is-flash');
+    }));
     chips.forEach(c => c.addEventListener('click', () => apply(Number(c.dataset.filter))));
 
     // Clicking a tag inside a project applies the first filter that covers it
@@ -437,10 +588,12 @@ function setupFadeIn() {
 // ── Init ──────────────────────────────────────────────────────────────────────
 
 async function init() {
-    const [manager, hero] = await Promise.all([
+    const [manager, hero, people] = await Promise.all([
         fetch('content/manager.json').then(r => r.json()),
         fetch('content/hero.json').then(r => r.json()),
+        fetch('content/people.json').then(r => r.json()),
     ]);
+    PEOPLE = people;
 
     renderNav(manager.sections);
     renderHero(hero);
@@ -459,6 +612,7 @@ async function init() {
     }
 
     setupFadeIn();
+    setupCountUp();
     if (ctx.experience) setupExperienceControls(ctx.experience);
     setupTerminal(hero, manager.sections, ctx);
 }
