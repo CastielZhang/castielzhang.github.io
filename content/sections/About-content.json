@@ -1,13 +1,13 @@
 {
   "paragraphs": [
-    "I'm a software developer based in Sydney, currently working at the University of Technology Sydney within an R&D innovative department called <a href=\"https://www.uts.edu.au/about/faculties/engineering-and-information-technology/partner-us/rapido\" target=\"_blank\" style=\"color:var(--accent);text-decoration:none;border-bottom:1px solid rgba(99,202,255,0.3);\">Rapido</a>.",
-    "My strengths lie in full-stack web development, frontend UX design, and Linux-based software development — spanning everything from low-level systems work to hands-on hardware installation and maintenance. I bring AI integration into projects where it adds real value — making systems more intelligent and workflows more efficient.",
+    "I'm a software engineer based in Sydney, working at <a class=\"text-link\" href=\"https://www.uts.edu.au/about/faculties/engineering-and-information-technology/partner-us/rapido\" target=\"_blank\">Rapido</a> — the University of Technology Sydney's R&D and engineering consultancy, delivering technology projects for industry partners.",
+    "My strengths span full-stack web development, frontend UX, and Linux-based systems engineering — from low-level hardware integration to production web applications. I integrate AI where it delivers measurable value, not as a buzzword.",
     "I thrive at the boundary between systems engineering and product delivery, often stepping into technical leadership when projects need direction."
   ],
   "stats": [
-    { "value": "4",  "label": "Years at UTS" },
-    { "value": "6+", "label": "Major Projects" },
-    { "value": "2",  "label": "Research Collabs" },
-    { "value": "∞",  "label": "Coffee Consumed" }
+    { "auto": "yearsAtCompany", "label": "Years at UTS" },
+    { "auto": "projectCount",   "label": "Major Projects" },
+    { "auto": "researchCount",  "label": "Research Collaborations" },
+    { "auto": "clientCount",    "label": "Industry Clients" }
   ]
 }

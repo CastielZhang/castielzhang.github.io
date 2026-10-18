@@ -6,15 +6,23 @@
   "items": [
     {
       "date": "2019 — 2022",
+      "research": true,
       "role": "Bachelor of Software Engineering (Honours)",
       "tags": [
         { "text": "Distinction",   "color": "blue"   },
         { "text": "Honours",       "color": "purple" },
-        { "text": "BCI Research",  "color": "green"  }
+        { "text": "BCI Research",  "color": "green"  },
+        { "text": "EEG",           "color": "green"  },
+        { "text": "Python",        "color": "orange" },
+        { "text": "MATLAB / EEGLAB", "color": "orange" },
+        { "text": "PsychoPy",      "color": "purple" }
       ],
       "bullets": [
-        "Honours project: Brain-Computer Interface (BCI) for Augmented Human Performance — Project SPR-22-09555.",
-        "Researched and developed BCI systems aimed at enhancing human cognitive and physical performance through neural signal processing."
+        "Final-year research project: Brain-Computer Interface (BCI) for Augmented Human Performance, conducted in Distinguished Professor CT Lin's lab — working alongside <a class=\"text-link person-link\" href=\"https://profiles.uts.edu.au/Thomas.Do/about\" target=\"_blank\">Thomas Do<span class=\"person-card\"><img src=\"content/sections/icons/do.webp\" alt=\"\"><span class=\"person-card-text\"><span class=\"person-card-name\">Thomas Do</span><span class=\"person-card-title\">Adjunct Fellow</span><span class=\"person-card-dept\">Australian Artificial Intelligence Institute</span></span></span></a> and with support from <a class=\"text-link person-link\" href=\"https://profiles.uts.edu.au/YuKai.Wang\" target=\"_blank\">Dr Yu-Kai Wang<span class=\"person-card\"><img src=\"content/sections/icons/wang.jpg\" alt=\"\"><span class=\"person-card-text\"><span class=\"person-card-name\">Dr Yu-Kai Wang</span><span class=\"person-card-title\">Senior Lecturer</span><span class=\"person-card-dept\">School of Computer Science</span></span></span></a>.",
+        "Designed a hidden-target detection experiment in PsychoPy — curating and standardising ~500 images into a six-zone response grid, with timed cue, search, response and confidence-rating phases.",
+        "Ran a behavioural pilot with 30 participants and analysed accuracy and reaction times in Python to calibrate task difficulty for the EEG study.",
+        "Recorded 64-channel EEG (Neuroscan, Curry 8) with event-marked trials, and built a MATLAB EEGLAB preprocessing pipeline — re-referencing, downsampling and ICA-based ocular artefact removal.",
+        "Identified decision-related neural activity peaking ~108 ms before and ~176 ms after participant responses."
       ]
     }
   ]

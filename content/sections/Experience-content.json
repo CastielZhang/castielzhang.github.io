@@ -14,8 +14,9 @@
       "role": "Associate Software Engineer",
       "type": "Full-time",
       "location": "Hybrid",
+      "research": true,
       "name": "DSI Project — AI-Powered Data Intelligence Platform",
-      "summary": "Research collaboration with UTS building an end-to-end pipeline that scrapes social media at scale, analyses discourse trends, and republishes AI-tagged content to a third-party platform.",
+      "summary": "Research collaboration with <a class=\"text-link person-link\" href=\"https://profiles.uts.edu.au/Marian-Andrei.Rizoiu\" target=\"_blank\">Prof. Marian-Andrei Rizoiu<span class=\"person-card\"><img src=\"content/sections/icons/rizoiu.png\" alt=\"\"><span class=\"person-card-text\"><span class=\"person-card-name\">Prof. Marian-Andrei Rizoiu</span><span class=\"person-card-title\">Director, Defence Innovation Network</span><span class=\"person-card-dept\">Data Science Institute</span></span></span></a> (UTS), building an end-to-end pipeline that collects public social media data at scale, analyses discourse trends, and republishes AI-tagged content to a third-party platform.",
       "tags": [
         { "text": "TypeScript",     "color": "blue"   },
         { "text": "Python",         "color": "orange" },
@@ -25,8 +26,7 @@
         { "text": "Web Scraping",   "color": "green"  }
       ],
       "bullets": [
-        "In collaboration with Prof. Marian Andrei Rizoiu, UTS.",
-        "Developed and maintained scrapers targeting major social media platforms to extract content signals, trending keywords, and engagement metrics at scale.",
+        "Developed and maintained data collectors targeting major social media platforms to extract content signals, trending keywords, and engagement metrics at scale.",
         "Aggregated and analysed topic trends over time to surface insights into evolving discourse patterns.",
         "Phase 2: integrated with a third-party publishing platform to automate an end-to-end pipeline — ingesting native data, applying AI-driven tagging and categorisation, and republishing enriched content programmatically."
       ]
@@ -36,6 +36,7 @@
       "role": "Associate Software Engineer",
       "type": "Full-time",
       "location": "Hybrid",
+      "clients": ["WV-Tech"],
       "name": "WV-Tech Phase 2 — GPU Memory Erasure & Integration",
       "summary": "Extended the data-wiping platform with NVIDIA VRAM erasure, embedding custom GPU drivers into a bootable ISO and validating against IEEE data-erasure standards with external certification partner Viden.",
       "tags": [
@@ -56,7 +57,7 @@
       "role": "Associate Software Engineer",
       "type": "Full-time",
       "location": "On-site",
-      "name": "Salesforce Developer & Administrator",
+      "name": "Salesforce CRM Platform — Development & Administration",
       "summary": "CRM development and administration for UTS Rapido's internal operations — building Apex automations, LWC components, and data integrity systems to support cross-team reporting.",
       "tags": [
         { "text": "Apex",                 "color": "blue"   },
@@ -76,7 +77,7 @@
       "type": "Full-time",
       "location": "On-site",
       "name": "UTS Working Planning Tool",
-      "summary": "Internal staff planning web app built from scratch in React and TypeScript, self-directed into an entirely unfamiliar stack and delivered on schedule.",
+      "summary": "Internal workload-planning web app for the UTS People Unit, used by staff across the university. Joined mid-project to accelerate frontend delivery in React and TypeScript.",
       "tags": [
         { "text": "TypeScript",    "color": "blue"   },
         { "text": "React",         "color": "purple" },
@@ -84,9 +85,10 @@
         { "text": "Responsive UI", "color": "green"  }
       ],
       "bullets": [
-        "Self-directed into web development with no prior experience — spearheaded the build using React and TypeScript from scratch.",
-        "Mastered React routing, providers, and component architecture; designed responsive layouts for cross-device compatibility.",
-        "Delivered a robust, comprehensive planning tool on schedule despite an entirely unfamiliar stack."
+        "Joined an in-flight project and quickly ramped up on the existing React and TypeScript codebase.",
+        "Built and extended features across the app's routing, context providers, and component architecture.",
+        "Implemented responsive layouts for consistent use across desktop and mobile devices.",
+        "Helped the team deliver the tool to UTS staff on schedule."
       ]
     },
     {
@@ -94,6 +96,7 @@
       "role": "Associate Software Engineer",
       "type": "Contract",
       "location": "Hybrid",
+      "clients": ["WV-Tech"],
       "name": "WV-Tech — Comprehensive Data Wiping Software",
       "summary": "Cross-platform desktop application for secure hardware data erasure, combining an Electron/React frontend with a Bash backend for BIOS interrogation, hardware reporting, and automated PDF output.",
       "tags": [
@@ -116,17 +119,24 @@
       "role": "Associate Software Engineer",
       "type": "Contract",
       "location": "Hybrid",
-      "name": "Quantum Project — Embedded OS & Dev Environment",
-      "summary": "Set up embedded Linux environments on single-board computers (Banana Pi, Raspberry Pi, Radxa CM3) for client TheQ, flashing custom OS images and containerising the development workflow with Docker.",
+      "research": true,
+      "clients": ["TheQ"],
+      "name": "Quantum Project — Embedded Deployment & Fleet Updates",
+      "summary": "Took over an existing project and deployed it onto single-board computers for clients TheQ and <a class=\"text-link person-link\" href=\"https://profiles.uts.edu.au/Simon.Devitt\" target=\"_blank\">Prof. Simon Devitt<span class=\"person-card\"><img src=\"content/sections/icons/devitt.jpg\" alt=\"\"><span class=\"person-card-text\"><span class=\"person-card-name\">Prof. Simon Devitt</span><span class=\"person-card-title\">Research Director</span><span class=\"person-card-dept\">School of Computer Science</span></span></span></a> (UTS Centre for Quantum Software and Information), building a containerised runtime with automatic over-the-network updates across all devices.",
       "tags": [
         { "text": "Docker",                   "color": "purple" },
+        { "text": "Bash",                     "color": "orange" },
         { "text": "Ubuntu",                   "color": "green"  },
+        { "text": "Embedded Linux",           "color": "green"  },
         { "text": "Banana Pi / Raspberry Pi", "color": "green"  },
-        { "text": "Radxa CM3",                "color": "green"  }
+        { "text": "Radxa CM3",                "color": "green"  },
+        { "text": "OTA Updates",              "color": "green"  }
       ],
       "bullets": [
-        "Client: TheQ. Utilised Banana Pi, Raspberry Pi, and Radxa CM3 chips to flash Ubuntu OS images, enhancing chip functionality.",
-        "Established a productive development environment using Docker for streamlined project development and deployment."
+        "Evaluated Banana Pi, Raspberry Pi and Radxa CM3 boards, selecting Banana Pi for software compatibility and long-term hardware availability.",
+        "Flashed and tuned Ubuntu images, optimising system services and setting up service management on a minimal image that shipped without systemctl, so application processes start automatically on boot.",
+        "Packaged the application as a Docker image running on each board for consistent, reproducible deployments.",
+        "Built a network-based update mechanism that automatically checks for new image versions and rolls out updates across the entire device fleet."
       ]
     },
     {
@@ -134,16 +144,21 @@
       "role": "Junior Software Engineer",
       "type": "Contract",
       "location": "Hybrid",
-      "name": "Distributed Processing System",
-      "summary": "Built a distributed processing system over a LAN bridge between master and worker nodes — tasks are split on the master, automatically distributed to workers via Python Celery, and results merged once all jobs complete.",
+      "clients": ["Navantia"],
+      "name": "Navantia Digital Twin Phase 2 — Distributed Processing System",
+      "summary": "Second phase of the Navantia digital twin work — scaled the data-processing pipeline into an event-driven distributed system, with a master node dispatching work to worker machines over a LAN bridge via Celery.",
       "tags": [
-        { "text": "Python", "color": "orange" },
-        { "text": "Bash",   "color": "orange" },
-        { "text": "Linux",  "color": "green"  },
-        { "text": "Ubuntu", "color": "green"  }
+        { "text": "Python",                "color": "orange" },
+        { "text": "Bash",                  "color": "orange" },
+        { "text": "Celery",                "color": "purple" },
+        { "text": "Linux",                 "color": "green"  },
+        { "text": "Ubuntu",                "color": "green"  },
+        { "text": "Distributed Computing", "color": "green"  }
       ],
       "bullets": [
-        "Contract role contributing to internal software projects across Linux and Python-based tooling."
+        "Deployed a watcher on the master node that monitors incoming ocean and weather data and automatically triggers processing when new data arrives.",
+        "Automatically split each new dataset and created Celery workers to distribute sub-tasks across networked worker machines for parallel computation.",
+        "Collected and merged worker outputs on the master node once all sub-tasks completed, producing the final result dataset."
       ]
     },
     {
@@ -151,17 +166,21 @@
       "role": "Software Engineer Intern",
       "type": "Internship",
       "location": "On-site",
+      "clients": ["Navantia"],
       "name": "Navantia Digital Twin",
-      "summary": "Internship on a defence maritime digital twin project, contributing to architecture simulation for the overall system model.",
+      "summary": "Internship on a defence maritime digital twin project that simulates voyage routes against one-month ocean current and weather forecasts to reduce fuel consumption and improve safety at sea. Built the data-processing layer around the simulation engine.",
       "tags": [
-        { "text": "Python",                  "color": "orange" },
-        { "text": "Bash",                    "color": "orange" },
-        { "text": "Ubuntu",                  "color": "green"  },
-        { "text": "Architecture Simulation", "color": "green"  },
-        { "text": "Digital Twin",            "color": "green"  }
+        { "text": "Python",          "color": "orange" },
+        { "text": "Bash",            "color": "orange" },
+        { "text": "pandas",          "color": "purple" },
+        { "text": "Ubuntu",          "color": "green"  },
+        { "text": "Data Processing", "color": "green"  },
+        { "text": "Digital Twin",    "color": "green"  }
       ],
       "bullets": [
-        "Involved in the Navantia Digital Twin project, contributing to architecture simulation for the overall system."
+        "Built Python and pandas scripts to clean and restructure incoming ocean current and weather data.",
+        "Split datasets into computation units for Navantia's proprietary simulation engine.",
+        "Merged the engine's partial outputs and computed the final result dataset."
       ]
     }
   ]

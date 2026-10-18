@@ -1,24 +1,24 @@
 {
   "groups": [
     {
-      "title": "Web Languages",
+      "title": "Languages",
       "color": "blue",
-      "items": ["TypeScript / JavaScript", "Apex (Salesforce)", "HTML / CSS"]
+      "items": ["TypeScript / JavaScript", "Python", "Bash / Shell", "Apex (Salesforce)", "HTML / CSS", "MATLAB"]
     },
     {
-      "title": "General Languages",
-      "color": "orange",
-      "items": ["Python", "Bash / Shell"]
-    },
-    {
-      "title": "Frameworks & Libraries",
+      "title": "Frontend",
       "color": "purple",
-      "items": ["React", "Electron", "Chakra UI", "Lightning Web Components", "Salesforce Flows", "Node.js", "Git / GitHub"]
+      "items": ["React", "Electron", "Chakra UI", "Lightning Web Components"]
     },
     {
-      "title": "Platforms & Systems",
+      "title": "Backend & Data",
+      "color": "orange",
+      "items": ["Node.js", "Celery", "pandas", "Distributed Processing", "Data Pipelines", "AI / NLP Integration"]
+    },
+    {
+      "title": "Systems & Tools",
       "color": "green",
-      "items": ["Linux / Ubuntu", "NVIDIA / CUDA", "Docker", "Salesforce CRM", "Custom ISO / BIOS", "Data Pipelines / AI"]
+      "items": ["Linux / Ubuntu", "Embedded Linux", "Docker", "NVIDIA / CUDA", "Custom ISO / BIOS", "Salesforce Flows", "Git / GitHub"]
     }
   ]
 }

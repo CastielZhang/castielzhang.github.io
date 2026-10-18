@@ -3,15 +3,54 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Castiel Zhang — Software Developer</title>
+    <title>Castiel Zhang — Software Engineer</title>
+    <meta name="description" content="Castiel Zhang — Software Engineer at UTS Rapido, Sydney. Full-stack development, Linux & systems engineering, and AI-powered data pipelines." />
+    <meta name="author" content="Castiel Zhang" />
+    <meta name="theme-color" content="#080c10" />
+    <link rel="canonical" href="https://castiel.au/" />
+
+    <!-- Link previews (LinkedIn, Facebook, WeChat, Slack, iMessage…) -->
+    <meta property="og:type" content="profile" />
+    <meta property="og:url" content="https://castiel.au/" />
+    <meta property="og:site_name" content="Castiel Zhang" />
+    <meta property="og:title" content="Castiel Zhang — Software Engineer" />
+    <meta property="og:description" content="Software Engineer at UTS Rapido, Sydney. Full-stack development, Linux & systems engineering, and AI-powered data pipelines." />
+    <meta property="og:image" content="https://castiel.au/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+    <meta property="og:image:alt" content="Castiel Zhang — Software Engineer" />
+    <meta property="og:locale" content="en_AU" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Structured data for search engines -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "Person",
+        "name": "Castiel Zhang",
+        "url": "https://castiel.au/",
+        "image": "https://castiel.au/og-image.png",
+        "jobTitle": "Software Engineer",
+        "worksFor": { "@type": "Organization", "name": "UTS Rapido" },
+        "alumniOf": { "@type": "CollegeOrUniversity", "name": "University of Technology Sydney" },
+        "address": { "@type": "PostalAddress", "addressLocality": "Sydney", "addressCountry": "AU" },
+        "sameAs": [
+            "https://www.linkedin.com/in/castiel-zhang-12433a114/",
+            "https://github.com/castielzhang"
+        ]
+    }
+    </script>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
     <link rel="stylesheet" href="style.css" />
+    <link rel="icon" href="favicon.ico" sizes="any" />
+    <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
+    <link rel="apple-touch-icon" href="apple-touch-icon.png" />
 </head>
 <body>
 
 <nav>
-    <span class="nav-logo">CZ.DEV</span>
+    <a class="nav-logo" href="#home"><img src="logo-mark.png" alt="" /><span>castiel.au</span></a>
     <ul class="nav-links" id="nav-links"></ul>
 </nav>
 
@@ -20,7 +59,7 @@
 <div id="sections-container"></div>
 
 <footer>
-    <span>© 2025 Castiel Zhang · Built with HTML/CSS/JS · Hosted on GitHub Pages</span>
+    <span>© <span id="footer-year">2025</span> Castiel Zhang · Built with HTML/CSS/JS · Hosted on GitHub Pages</span>
 </footer>
 
 <script>
@@ -64,11 +103,22 @@ function sectionHtml(section, index, inner) {
 
 // ── Section renderers ─────────────────────────────────────────────────────────
 
-function renderAbout(data) {
+// Stats with an "auto" key are derived from the Experience and Education content
+const AUTO_STATS = {
+    // Floored to the nearest half year, e.g. 54 months → "4.5"
+    yearsAtCompany: ({ experience: exp }) => String(Math.floor(monthsBetween(exp.company.tenure.start, exp.company.tenure.end) / 6) / 2),
+    projectCount:   ({ experience }) => String(experience.items.length),
+    // Items flagged "research": true
+    researchCount:  ({ experience, education }) => String([...experience.items, ...education.items].filter(i => i.research).length),
+    // Distinct names across items' "clients" arrays
+    clientCount:    ({ experience }) => String(new Set(experience.items.flatMap(i => i.clients || [])).size),
+};
+
+function renderAbout(data, ctx) {
     const paras = data.paragraphs.map(p => `<p>${p}</p>`).join('');
     const stats = data.stats.map(s => `
         <div class="stat-cell">
-            <div class="stat-num">${esc(s.value)}</div>
+            <div class="stat-num">${esc(s.auto ? AUTO_STATS[s.auto](ctx) : s.value)}</div>
             <div class="stat-label">${esc(s.label)}</div>
         </div>`).join('');
     return `
@@ -101,10 +151,14 @@ function formatDate(date) {
     return `${fmt(date.start)} — ${end}`;
 }
 
-function calcDuration(start, end) {
+function monthsBetween(start, end) {
     const s = new Date(start.year, (MONTH_NUM[start.month] || 1) - 1);
     const e = end ? new Date(end.year, (MONTH_NUM[end.month] || 1) - 1) : new Date();
-    const months = (e.getFullYear() - s.getFullYear()) * 12 + (e.getMonth() - s.getMonth());
+    return (e.getFullYear() - s.getFullYear()) * 12 + (e.getMonth() - s.getMonth());
+}
+
+function calcDuration(start, end) {
+    const months = monthsBetween(start, end);
     const yrs = Math.floor(months / 12);
     const mos = months % 12;
     const parts = [];
@@ -123,7 +177,7 @@ function formatTenure(tenure) {
 function timelineItemHtml(item, showSummary) {
     const tags = item.tags.map(t =>
         `<span class="tag tag-${t.color}">${esc(t.text)}</span>`).join('');
-    const bullets = item.bullets.map(b => `<li>${esc(b)}</li>`).join('');
+    const bullets = item.bullets.map(b => `<li>${b}</li>`).join('');
     const roleParts = item.name ? [item.role, item.type, item.location].filter(Boolean) : [];
     return `
     <div class="timeline-item fade-in">
@@ -131,7 +185,7 @@ function timelineItemHtml(item, showSummary) {
         <div class="timeline-content">
             <p class="exp-role">${esc(item.name || item.role)}</p>
             ${roleParts.length ? `<p class="exp-role-sub">${roleParts.map(esc).join(' · ')}</p>` : ''}
-            ${showSummary && item.summary ? `<p class="exp-summary">${esc(item.summary)}</p>` : ''}
+            ${showSummary && item.summary ? `<p class="exp-summary">${item.summary}</p>` : ''}
             ${tags    ? `<div class="exp-tags">${tags}</div>`      : ''}
             ${bullets ? `<ul class="exp-bullets">${bullets}</ul>`  : ''}
         </div>
@@ -174,6 +228,7 @@ function renderContact(data) {
     return `
     <div class="contact-inner fade-in">
         <p class="contact-desc">${esc(data.description)}</p>
+        ${data.email ? `<p class="contact-email"><a class="text-link" href="mailto:${esc(data.email)}">✉ ${esc(data.email)}</a></p>` : ''}
         <div class="contact-links">${links}</div>
     </div>`;
 }
@@ -201,13 +256,19 @@ async function init() {
 
     renderNav(manager.sections);
     renderHero(hero);
+    document.getElementById('footer-year').textContent = new Date().getFullYear();
+
+    // Fetch all sections up front so About can derive stats from Experience
+    const datas = await Promise.all(manager.sections.map(s =>
+        fetch('content/' + s.file).then(r => r.json())));
+    const byId = id => datas[manager.sections.findIndex(s => s.id === id)];
+    const ctx  = { experience: byId('experience'), education: byId('education') };
 
     const container = document.getElementById('sections-container');
     for (const [i, section] of manager.sections.entries()) {
-        const data     = await fetch('content/' + section.file).then(r => r.json());
         const renderer = RENDERERS[section.id];
         if (!renderer) continue;
-        container.insertAdjacentHTML('beforeend', sectionHtml(section, i + 1, renderer(data)));
+        container.insertAdjacentHTML('beforeend', sectionHtml(section, i + 1, renderer(datas[i], ctx)));
     }
 
     setupFadeIn();
