@@ -1,20 +1,20 @@
 :root {
-    --bg: #0b0b0c;
-    --bg2: #101011;
-    --bg3: #151517;
-    --surface: #18181a;
+    --bg: #121214;
+    --bg2: #161619;
+    --bg3: #1a1a1d;
+    --surface: #1d1d21;
     --border: rgba(255,255,255,0.07);
     --border-hover: color-mix(in srgb, var(--accent) 40%, transparent);
     --accent: #c9a54e;
     --accent2: #e8d9b5;
     --accent3: #9d9ca3;
     /* Category colours for tags and skill groups (names are the keys used in content JSON) */
-    --c-blue: var(--accent);
-    --c-purple: #cfccc6;
-    --c-green: var(--accent3);
-    --c-orange: #b39468;
-    --text: #e7e5e1;
-    --muted: #a09e99;
+    --c-blue: #8fa9c6;
+    --c-purple: #ad9cc8;
+    --c-green: #93b89f;
+    --c-orange: #cc9670;
+    --text: #dedcd7;
+    --muted: #a3a19c;
     --mono: 'JetBrains Mono', monospace;
     --sans: 'Inter', sans-serif;
 }
@@ -28,19 +28,6 @@ body {
     font-size: 17px;
     line-height: 1.7;
     overflow-x: hidden;
-}
-
-/* ── GRID NOISE BACKGROUND ── */
-body::before {
-    content: '';
-    position: fixed;
-    inset: 0;
-    background-image:
-        linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
-    background-size: 48px 48px;
-    pointer-events: none;
-    z-index: 0;
 }
 
 /* ── NAV ── */
