@@ -1,20 +1,20 @@
 :root {
-    --bg: #0a0908;
-    --bg2: #0f0e0c;
-    --bg3: #14120f;
-    --surface: #1a1814;
-    --border: color-mix(in srgb, var(--accent) 10%, transparent);
-    --border-hover: color-mix(in srgb, var(--accent) 30%, transparent);
-    --accent: #d6a42a;
-    --accent2: #f1dca7;
-    --accent3: #c9c1b1;
+    --bg: #0b0b0c;
+    --bg2: #101011;
+    --bg3: #151517;
+    --surface: #18181a;
+    --border: rgba(255,255,255,0.07);
+    --border-hover: color-mix(in srgb, var(--accent) 40%, transparent);
+    --accent: #c9a54e;
+    --accent2: #e8d9b5;
+    --accent3: #9d9ca3;
     /* Category colours for tags and skill groups (names are the keys used in content JSON) */
     --c-blue: var(--accent);
-    --c-purple: var(--accent2);
+    --c-purple: #cfccc6;
     --c-green: var(--accent3);
-    --c-orange: #c8794a;
-    --text: #efe9df;
-    --muted: #b0a795;
+    --c-orange: #b39468;
+    --text: #e7e5e1;
+    --muted: #a09e99;
     --mono: 'JetBrains Mono', monospace;
     --sans: 'Inter', sans-serif;
 }
@@ -36,8 +36,8 @@ body::before {
     position: fixed;
     inset: 0;
     background-image:
-        linear-gradient(color-mix(in srgb, var(--accent) 3%, transparent) 1px, transparent 1px),
-        linear-gradient(90deg, color-mix(in srgb, var(--accent) 3%, transparent) 1px, transparent 1px);
+        linear-gradient(rgba(255,255,255,0.018) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255,255,255,0.018) 1px, transparent 1px);
     background-size: 48px 48px;
     pointer-events: none;
     z-index: 0;
