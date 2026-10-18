@@ -4,7 +4,7 @@
     --bg3: #111820;
     --surface: #161d26;
     --grid: rgba(99,202,255,0.03);
-    --border: rgba(255,255,255,0.07);
+    --border: rgba(99,202,255,0.1);
     --border-hover: color-mix(in srgb, var(--accent) 40%, transparent);
     --accent: #c9a54e;
     --accent2: #e8d9b5;
@@ -14,8 +14,9 @@
     --c-purple: #ad9cc8;
     --c-green: #93b89f;
     --c-orange: #cc9670;
-    --text: #dedcd7;
-    --muted: #a3a19c;
+    /* Cool, blue-tinted greys keep the navy background reading as blue next to the gold accent */
+    --text: #e8edf2;
+    --muted: #a8bccf;
     --mono: 'JetBrains Mono', monospace;
     --sans: 'Inter', sans-serif;
 }
