@@ -8,6 +8,17 @@
     },
     "logo": "content/sections/icons/uts-logo.svg"
   },
+  "filters": [
+    { "label": "Python",     "match": ["Python", "pandas", "Celery"] },
+    { "label": "TypeScript", "match": ["TypeScript"] },
+    { "label": "React",      "match": ["React", "Electron"] },
+    { "label": "Linux",      "match": ["Linux", "Ubuntu", "Embedded Linux", "Custom ISO"] },
+    { "label": "Bash",       "match": ["Bash"] },
+    { "label": "Docker",     "match": ["Docker"] },
+    { "label": "AI & Data",  "match": ["AI / NLP", "Data Pipelines", "Data Processing", "Distributed Computing", "Web Scraping"] },
+    { "label": "Hardware",   "match": ["NVIDIA / CUDA", "Banana Pi / Raspberry Pi", "Radxa CM3", "Custom ISO"] },
+    { "label": "Salesforce", "match": ["Apex", "LWC", "Flows"] }
+  ],
   "items": [
     {
       "date": { "start": { "month": "Aug", "year": 2024 }, "end": { "month": "Dec", "year": 2025 } },

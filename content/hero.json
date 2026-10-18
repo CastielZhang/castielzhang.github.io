@@ -4,6 +4,12 @@
     "first": "Castiel",
     "last": "Zhang"
   },
-  "title": "Full-Stack Development · Linux & Systems Engineering · AI Data Pipelines",
-  "description": "Software engineer at UTS Rapido — building hardware-level data-erasure systems, AI-powered data pipelines, and full-stack engineering tools across Linux and embedded platforms."
+  "terminal": {
+    "user": "castiel@sydney",
+    "intro": [
+      { "cmd": "whoami",        "out": ["Castiel Zhang — Software Engineer @ UTS Rapido, Sydney"] },
+      { "cmd": "cat focus.txt", "out": ["Full-Stack Development · Linux & Systems Engineering · AI Data Pipelines"] },
+      { "cmd": "cat now.txt",   "out": ["Building hardware-level data-erasure systems, AI-powered data pipelines,", "and full-stack engineering tools across Linux and embedded platforms."] }
+    ]
+  }
 }

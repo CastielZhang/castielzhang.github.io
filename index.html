@@ -43,7 +43,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
     <!-- Bump ?v= whenever style.css changes so browsers drop their cached copy -->
-    <link rel="stylesheet" href="style.css?v=7" />
+    <link rel="stylesheet" href="style.css?v=9" />
     <link rel="icon" href="favicon.ico" sizes="any" />
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
     <link rel="apple-touch-icon" href="apple-touch-icon.png" />
@@ -80,14 +80,130 @@ function renderNav(sections) {
 // ── Hero ─────────────────────────────────────────────────────────────────────
 
 function renderHero(data) {
+    const user = esc(data.terminal.user);
     document.getElementById('home').innerHTML = `
         <p class="hero-eyebrow fade-in">// ${esc(data.eyebrow)}</p>
         <h1 class="hero-name fade-in">${esc(data.name.first)} <span>${esc(data.name.last)}</span></h1>
-        <p class="hero-title fade-in">${esc(data.title)}</p>
+        <div class="term fade-in" id="term">
+            <div class="term-bar" aria-hidden="true">
+                <span class="term-dot"></span><span class="term-dot"></span><span class="term-dot"></span>
+                <span class="term-title">${user}: ~</span>
+            </div>
+            <div class="term-body" id="term-body" aria-live="polite"></div>
+            <form class="term-input-row" id="term-form" hidden>
+                <span class="term-prompt">${user}:~$</span>
+                <input class="term-input" id="term-input" aria-label="Terminal command"
+                       autocomplete="off" autocapitalize="off" spellcheck="false" placeholder="type 'help' to explore" />
+            </form>
+        </div>
         <div class="hero-bottom fade-in">
-            <p class="hero-desc">${esc(data.description)}</p>
             <a class="hero-cta" href="#experience">View Experience →</a>
         </div>`;
+}
+
+// ── Hero terminal ─────────────────────────────────────────────────────────────
+
+const REDUCED_MOTION = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const sleep = ms => new Promise(r => setTimeout(r, REDUCED_MOTION ? 0 : ms));
+const stripTags = s => String(s).replace(/<[^>]+>/g, '');
+
+const term = {
+    body: null, user: '', commands: {}, history: [], histPos: 0,
+
+    line(html, cls = 'term-out') {
+        const p = document.createElement('p');
+        p.className = cls;
+        p.innerHTML = html;
+        this.body.appendChild(p);
+        this.body.scrollTop = this.body.scrollHeight;
+        return p;
+    },
+    promptLine(cmd = '') {
+        return this.line(`<span class="term-prompt">${esc(this.user)}:~$</span> <span class="term-cmd">${esc(cmd)}</span>`, 'term-line');
+    },
+    print(lines) { [].concat(lines).forEach(l => this.line(l)); },
+
+    // Plays the intro once: commands are typed character by character, output appears instantly
+    async intro(steps) {
+        for (const step of steps) {
+            const cmdEl = this.promptLine().querySelector('.term-cmd');
+            await sleep(350);
+            for (const ch of step.cmd) { cmdEl.textContent += ch; await sleep(55); }
+            await sleep(250);
+            this.print(step.out.map(esc));
+            await sleep(400);
+        }
+    },
+
+    run(raw) {
+        const input = raw.trim();
+        this.promptLine(input);
+        if (!input) return;
+        this.history.push(input);
+        this.histPos = this.history.length;
+        const [name, ...args] = input.split(/\s+/);
+        const fn = this.commands[input] || this.commands[name.toLowerCase()];
+        if (fn) fn(args);
+        else this.print(`command not found: ${esc(name)} — try <span class="term-hl">help</span>`);
+    },
+};
+
+function setupTerminal(hero, sections, ctx) {
+    term.body = document.getElementById('term-body');
+    term.user = hero.terminal.user;
+    const ids = sections.map(s => s.id);
+    const goto = id => document.getElementById(id).scrollIntoView({ behavior: REDUCED_MOTION ? 'auto' : 'smooth' });
+    const row = (k, v) => `<span class="term-hl">${esc(k.padEnd(12))}</span>${v}`;
+
+    // Intro commands can be re-run by typing them
+    for (const step of hero.terminal.intro) term.commands[step.cmd] = () => term.print(step.out.map(esc));
+
+    Object.assign(term.commands, {
+        help: () => term.print([
+            row('whoami', 'who I am'),
+            row('about', 'a short bio'),
+            row('projects', 'what I\'ve built'),
+            row('skills', 'technical stack'),
+            row('contact', 'get in touch'),
+            row('ls', 'list sections'),
+            row('cd <name>', 'jump to a section, e.g. cd experience'),
+            row('clear', 'clear the screen'),
+        ]),
+        about: () => term.print(ctx.about.paragraphs.map(p => esc(stripTags(p)))),
+        projects: () => term.print(sortByStart(ctx.experience.items).map(i =>
+            `<span class="term-dim">${esc(formatDate(i.date).padEnd(22))}</span>${esc(i.name)}`)),
+        skills: () => term.print(ctx.skills.groups.map(g => row(g.title, esc(g.items.join(', '))))),
+        contact: () => term.print([
+            ...(ctx.contact.email ? [row('email', `<a class="term-link" href="mailto:${esc(ctx.contact.email)}">${esc(ctx.contact.email)}</a>`)] : []),
+            ...ctx.contact.links.map(l => row(l.label.toLowerCase(), `<a class="term-link" href="${esc(l.href)}" target="_blank">${esc(l.href.replace(/^https?:\/\/(www\.)?/, ''))}</a>`)),
+        ]),
+        ls: () => term.print(ids.map(id => `<span class="term-hl">${esc(id)}/</span>`).join('  ')),
+        cd: ([dest = '']) => {
+            const id = dest.replace(/^[~./]+|\/$/g, '').toLowerCase();
+            if (!id) return;
+            if (ids.includes(id)) goto(id);
+            else term.print(`cd: no such section: ${esc(dest)} — try <span class="term-hl">ls</span>`);
+        },
+        clear: () => { term.body.innerHTML = ''; },
+        sudo: () => term.print('Nice try. This incident will be reported. 😉'),
+    });
+    term.commands.open = term.commands.cd;
+
+    const form  = document.getElementById('term-form');
+    const input = document.getElementById('term-input');
+    form.addEventListener('submit', e => { e.preventDefault(); term.run(input.value); input.value = ''; });
+    input.addEventListener('keydown', e => {
+        if (e.key !== 'ArrowUp' && e.key !== 'ArrowDown') return;
+        e.preventDefault();
+        term.histPos = Math.max(0, Math.min(term.history.length, term.histPos + (e.key === 'ArrowUp' ? -1 : 1)));
+        input.value = term.history[term.histPos] || '';
+    });
+    // Clicking anywhere in the window focuses the prompt (but not when selecting text or following a link)
+    document.getElementById('term').addEventListener('click', e => {
+        if (!form.hidden && !e.target.closest('a') && !getSelection().toString()) input.focus({ preventScroll: true });
+    });
+
+    term.intro(hero.terminal.intro).then(() => { form.hidden = false; });
 }
 
 // ── Section wrapper ───────────────────────────────────────────────────────────
@@ -176,39 +292,109 @@ function formatTenure(tenure) {
     return `${range} · ${duration} · ${tenure.location}`;
 }
 
-function timelineItemHtml(item, showSummary) {
+// Experience items render with a summary and collapsible bullets; education items show bullets inline
+function timelineItemHtml(item, isProject) {
     const tags = item.tags.map(t =>
         `<span class="tag tag-${t.color}">${esc(t.text)}</span>`).join('');
     const bullets = item.bullets.map(b => `<li>${b}</li>`).join('');
+    const list    = bullets ? `<ul class="exp-bullets">${bullets}</ul>` : '';
     const roleParts = item.name ? [item.role, item.type, item.location].filter(Boolean) : [];
+    const tagData   = esc(JSON.stringify(item.tags.map(t => t.text))).replace(/"/g, '&quot;');
     return `
-    <div class="timeline-item fade-in">
+    <div class="timeline-item fade-in" data-tags="${tagData}">
         <div class="timeline-date">${esc(typeof item.date === 'object' ? formatDate(item.date) : item.date)}</div>
         <div class="timeline-content">
             <p class="exp-role">${esc(item.name || item.role)}</p>
             ${roleParts.length ? `<p class="exp-role-sub">${roleParts.map(esc).join(' · ')}</p>` : ''}
-            ${showSummary && item.summary ? `<p class="exp-summary">${item.summary}</p>` : ''}
-            ${tags    ? `<div class="exp-tags">${tags}</div>`      : ''}
-            ${bullets ? `<ul class="exp-bullets">${bullets}</ul>`  : ''}
+            ${isProject && item.summary ? `<p class="exp-summary">${item.summary}</p>` : ''}
+            ${tags ? `<div class="exp-tags">${tags}</div>` : ''}
+            ${isProject && list
+                ? `<details class="exp-details"><summary>Details <span class="exp-details-count">${item.bullets.length}</span></summary>${list}</details>`
+                : list}
         </div>
     </div>`;
 }
 
+const sortByStart = items => [...items].sort((a, b) => {
+    if (b.date.start.year !== a.date.start.year) return b.date.start.year - a.date.start.year;
+    return (MONTH_NUM[b.date.start.month] || 0) - (MONTH_NUM[a.date.start.month] || 0);
+});
+
 function renderExperience(data) {
-    const sorted = [...data.items].sort((a, b) => {
-        if (b.date.start.year !== a.date.start.year) return b.date.start.year - a.date.start.year;
-        return (MONTH_NUM[b.date.start.month] || 0) - (MONTH_NUM[a.date.start.month] || 0);
-    });
+    const sorted = sortByStart(data.items);
     const items = sorted.map(i => timelineItemHtml(i, true)).join('');
     const logo  = data.company.logo
         ? `<img class="company-logo" src="${data.company.logo}" alt="${esc(data.company.name)} logo">`
         : '';
+    // Only offer filters that match at least one project
+    const filters = (data.filters || []).map(f => ({
+        ...f, count: sorted.filter(i => i.tags.some(t => f.match.includes(t.text))).length,
+    })).filter(f => f.count);
+    const chip = (label, count, i, active) =>
+        `<button type="button" class="filter-chip${active ? ' is-active' : ''}" data-filter="${i}" aria-pressed="${active}">${esc(label)} <span>${count}</span></button>`;
     return `
+    <div class="exp-toolbar fade-in">
+        <div class="filter-chips" role="group" aria-label="Filter projects by technology">
+            ${chip('All', sorted.length, -1, true)}${filters.map((f, i) => chip(f.label, f.count, i, false)).join('')}
+        </div>
+        <button type="button" class="exp-toggle-all" aria-pressed="false">Expand all</button>
+    </div>
     <div class="company-header fade-in">
         <span class="company-name">${logo}${esc(data.company.name)}</span>
         <span class="company-tenure">${esc(formatTenure(data.company.tenure))}</span>
     </div>
-    <div class="timeline">${items}</div>`;
+    <div class="timeline" id="exp-timeline">${items}</div>
+    <p class="exp-filter-empty" hidden>No projects match this filter.</p>`;
+}
+
+function setupExperienceControls(data) {
+    const section  = document.getElementById('experience');
+    const items    = [...section.querySelectorAll('#exp-timeline .timeline-item')];
+    const chips    = [...section.querySelectorAll('.filter-chip')];
+    const toggle   = section.querySelector('.exp-toggle-all');
+    const filters  = (data.filters || []).filter(f => data.items.some(i => i.tags.some(t => f.match.includes(t.text))));
+
+    const apply = idx => {
+        const match = idx < 0 ? null : filters[idx].match;
+        chips.forEach(c => {
+            const on = Number(c.dataset.filter) === idx;
+            c.classList.toggle('is-active', on);
+            c.setAttribute('aria-pressed', on);
+        });
+        items.forEach(el => {
+            const tags = JSON.parse(el.dataset.tags);
+            const show = !match || tags.some(t => match.includes(t));
+            el.hidden = !show;
+            el.querySelectorAll('.tag').forEach(t => t.classList.toggle('is-match', !!match && match.includes(t.textContent)));
+            if (show) el.classList.add('visible');
+        });
+        section.querySelector('.exp-filter-empty').hidden = items.some(el => !el.hidden);
+    };
+    chips.forEach(c => c.addEventListener('click', () => apply(Number(c.dataset.filter))));
+
+    // Clicking a tag inside a project applies the first filter that covers it
+    section.addEventListener('click', e => {
+        const tag = e.target.closest('#exp-timeline .tag');
+        if (!tag) return;
+        const idx = filters.findIndex(f => f.match.includes(tag.textContent));
+        if (idx >= 0) apply(idx);
+    });
+    items.forEach(el => el.querySelectorAll('.tag').forEach(t => {
+        if (filters.some(f => f.match.includes(t.textContent))) t.classList.add('is-filterable');
+    }));
+
+    const details = [...section.querySelectorAll('.exp-details')];
+    const syncToggle = () => {
+        const allOpen = details.every(d => d.open);
+        toggle.textContent = allOpen ? 'Collapse all' : 'Expand all';
+        toggle.setAttribute('aria-pressed', allOpen);
+    };
+    toggle.addEventListener('click', () => {
+        const open = !details.every(d => d.open);
+        details.forEach(d => { d.open = open; });
+        syncToggle();
+    });
+    details.forEach(d => d.addEventListener('toggle', syncToggle));
 }
 
 function renderEducation(data) {
@@ -263,8 +449,7 @@ async function init() {
     // Fetch all sections up front so About can derive stats from Experience
     const datas = await Promise.all(manager.sections.map(s =>
         fetch('content/' + s.file).then(r => r.json())));
-    const byId = id => datas[manager.sections.findIndex(s => s.id === id)];
-    const ctx  = { experience: byId('experience'), education: byId('education') };
+    const ctx  = Object.fromEntries(manager.sections.map((s, i) => [s.id, datas[i]]));
 
     const container = document.getElementById('sections-container');
     for (const [i, section] of manager.sections.entries()) {
@@ -274,6 +459,8 @@ async function init() {
     }
 
     setupFadeIn();
+    if (ctx.experience) setupExperienceControls(ctx.experience);
+    setupTerminal(hero, manager.sections, ctx);
 }
 
 init();
