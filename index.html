@@ -43,7 +43,7 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;800&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet" />
     <!-- Bump ?v= whenever style.css changes so browsers drop their cached copy -->
-    <link rel="stylesheet" href="style.css?v=20" />
+    <link rel="stylesheet" href="style.css?v=22" />
     <link rel="icon" href="favicon.ico" sizes="any" />
     <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
     <link rel="apple-touch-icon" href="apple-touch-icon.png" />
@@ -230,6 +230,77 @@ function setupTabTitle() {
     });
 }
 
+// ── Secure wipe (`rm -rf /`) ─────────────────────────────────────────────────
+// A nod to the WV-Tech data-erasure work: every text node on the page is overwritten in
+// three passes, verified, and later restored from the copy taken beforehand.
+
+const WIPE_PASSES = [
+    { name: 'zeros',  fill: () => '0' },
+    { name: 'ones',   fill: () => '1' },
+    { name: 'random', fill: () => GLYPHS[Math.random() * GLYPHS.length | 0] },
+];
+
+const progressBar = (k, width = 24) => '#'.repeat(Math.round(k * width)).padEnd(width, '·');
+
+function pageTextNodes() {
+    const walker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT, {
+        acceptNode: n => n.parentElement.closest('script, style, #term, .print-only') || !n.textContent.trim()
+            ? NodeFilter.FILTER_REJECT : NodeFilter.FILTER_ACCEPT,
+    });
+    const nodes = [];
+    while (walker.nextNode()) nodes.push(walker.currentNode);
+    return nodes;
+}
+
+// Runs the passes with a progress bar per pass; resolves to { restore, blocks, bytes, text }
+async function shredPage() {
+    const nodes    = pageTextNodes();
+    const original = nodes.map(n => n.textContent);
+    const text     = original.join('');
+    const bytes    = new TextEncoder().encode(text).length;
+    term.print(`shred: ${nodes.length} blocks · ${bytes.toLocaleString('en-AU')} bytes · 3 passes`);
+    const steps = 20;
+    for (const [p, pass] of WIPE_PASSES.entries()) {
+        // Each pass overwrites the nodes in a fresh random order, so the wipe spreads across the page
+        const order = nodes.map((_, i) => i).sort(() => Math.random() - 0.5);
+        const line  = term.line('');
+        for (let s = 1; s <= steps; s++) {
+            const from = Math.floor((s - 1) / steps * nodes.length), to = Math.floor(s / steps * nodes.length);
+            // Reduced motion keeps the page still; only the progress bars run
+            if (!REDUCED_MOTION) for (const i of order.slice(from, to)) nodes[i].textContent = original[i].replace(/\S/g, pass.fill);
+            line.textContent = `Pass ${p + 1}/${WIPE_PASSES.length}  ${pass.name.padEnd(6)}  [${progressBar(s / steps)}] ${String(Math.round(s / steps * 100)).padStart(3)}%`;
+            await sleep(45);
+        }
+    }
+    term.line(`Verify        ${''.padEnd(6)}  [${progressBar(1)}] 100%  <span class="term-hl">OK</span>`);
+    return { restore: () => nodes.forEach((n, i) => { n.textContent = original[i]; }), blocks: nodes.length, bytes, text };
+}
+
+async function sha256(s) {
+    try {
+        const digest = await crypto.subtle.digest('SHA-256', new TextEncoder().encode(s));
+        return [...new Uint8Array(digest)].map(b => b.toString(16).padStart(2, '0')).join('');
+    } catch {
+        return null;   // crypto.subtle only exists on https / localhost
+    }
+}
+
+// Box-drawn certificate, printed as one preformatted block
+function wipeCertificate(rows) {
+    const keyW = Math.max(...rows.map(([k]) => k.length)) + 2;
+    const lines = rows.map(([k, v]) => k.padEnd(keyW) + v);
+    const inner = Math.max(...lines.map(l => l.length)) + 2;
+    const title = '─ Certificate of Data Erasure ';
+    return [
+        `┌${title}${'─'.repeat(inner - title.length)}┐`,
+        ...lines.map(l => `│ ${l.padEnd(inner - 2)} │`),
+        `└${'─'.repeat(inner)}┘`,
+    ].join('\n');
+}
+
+// Hostname the site is published under, e.g. castiel.au
+const siteHost = () => new URL(document.querySelector('link[rel="canonical"]')?.href || location.href).hostname;
+
 // ── Hero terminal ─────────────────────────────────────────────────────────────
 
 const term = {
@@ -298,6 +369,10 @@ function setupTerminal(hero, sections, ctx) {
     // "Files" are the intro's `cat <file>` steps, plus resume.pdf which opens the print dialog
     const files = [...hero.terminal.intro.map(s => s.cmd.match(/^cat (\S+)$/)?.[1]).filter(Boolean), 'resume.pdf'];
     const goto = id => document.getElementById(id).scrollIntoView({ behavior: REDUCED_MOTION ? 'auto' : 'smooth' });
+    // Links to the WV-Tech data-erasure projects, for the wipe and GPU easter eggs
+    const erasureLinks = sortByStart(ctx.experience.items)
+        .map((item, i) => ({ item, i })).filter(({ item }) => (item.clients || []).includes('WV-Tech'))
+        .map(({ item, i }) => `<a class="term-link" href="#project-${i}">${esc(item.short || item.name)}</a>`).join(' · ');
     const row = (k, v) => `<span class="term-hl">${esc(k.padEnd(12))}</span>${v}`;
     const kv  = (k, v) => `<span class="term-hl">${esc(k)}</span>: ${v}`;
     // Hides the prompt while an animated command plays, then hands focus back
@@ -364,6 +439,7 @@ function setupTerminal(hero, sections, ctx) {
                 kv('Uptime', esc(calcDuration(tenure.start, tenure.end))),
                 kv('Projects', esc(exp.items.length)),
                 kv('Stack', esc(ctx.skills.groups.map(g => g.items[0]).join(' · '))),
+                kv('GPU', 'Castiel-Brain RTX <span class="term-dim">(try nvidia-smi)</span>'),
                 kv('Shell', 'portfolio-sh'),
                 '',
                 swatches,
@@ -386,13 +462,71 @@ function setupTerminal(hero, sections, ctx) {
                 return term.print(`rm: cannot remove '${esc(args.at(-1) || '')}': Permission denied`);
             return busy(async () => {
                 for (const id of ids) { term.print(`removed '/${esc(id)}/'`); await sleep(160); }
+                const wipe = await shredPage();
+                const hash = await sha256(wipe.text);
+                await sleep(300);
                 term.print('<span class="term-err">Kernel panic — not syncing: portfolio not found</span>');
                 termEl.classList.add('is-crashed');
                 await sleep(1600);
                 termEl.classList.remove('is-crashed');
                 term.body.innerHTML = '';
-                term.print(['Rebooting…', 'Restored from backup. Nothing was harmed 🙂']);
+                term.print('Rebooting…');
+                await sleep(700);
+                wipe.restore();
+                term.line(esc(wipeCertificate([
+                    ['Device',   siteHost()],
+                    ['Method',   '3-pass · 0s/1s/random'],
+                    ['Blocks',   `${wipe.blocks} nodes · ${wipe.bytes.toLocaleString('en-AU')} B`],
+                    ['Verified', 'PASSED'],
+                    ...(hash ? [['SHA-256', `${hash.slice(0, 8)}…${hash.slice(-8)}`]] : []),
+                    ['Issued',   new Date().toLocaleString('en-AU', { dateStyle: 'medium', timeStyle: 'short' })],
+                    ['Operator', term.user.split('@')[0]],
+                ])), 'term-out term-block');
+                term.print(['Restored from backup. Nothing was harmed 🙂',
+                    `<span class="term-dim">I build the real thing — see</span> ${erasureLinks}`]);
             });
+        },
+        'nvidia-smi': () => {
+            const rnd  = (a, b) => a + (Math.random() * (b - a + 1) | 0);
+            const W    = [41, 24, 22];
+            const full = W.reduce((a, b) => a + b) + W.length - 1;
+            // A cell with text on the left and right, like nvidia-smi's own columns
+            const lr   = (l, r, w) => l + r.padStart(w - l.length - 1) + ' ';
+            const row  = cells => '|' + cells.map((c, i) => c.padEnd(W[i])).join('|') + '|';
+            const rule = (ch, joint = '+') => '+' + W.map(w => ch.repeat(w)).join(joint) + '+';
+            const wide = (l, r = '') => '|' + lr(l, r, full) + '|';
+            const util = rnd(72, 99), temp = rnd(34, 52), fan = rnd(30, 60), pwr = rnd(85, 160);
+
+            // Processes are the projects still running, plus the usual suspects
+            const ongoing = ctx.experience.items.filter(i => !i.date.end)
+                .map(i => (i.short || i.name).toLowerCase().replace(/\W+/g, '-'));
+            const procs = [...ongoing, 'coffee', 'side-projects', 'chrome (47 tabs)', 'stackoverflow'];
+            // Each process gets a random share that keeps the total under the card's 16384MiB
+            const mems  = procs.map(() => rnd(4, Math.floor(15360 / 128 / procs.length)) * 128);
+            const used  = mems.reduce((a, b) => a + b);
+
+            const now = new Date();
+            const table = [
+                `${now.toDateString().slice(0, 10)} ${now.toTimeString().slice(0, 8)} ${now.getFullYear()}`,
+                '+' + '-'.repeat(full) + '+',
+                wide(' NVIDIA-SMI 2026.10      Driver Version: caffeine-3x.day', 'CUDA Version: 12.4'),
+                '|' + W.map(w => '-'.repeat(w)).join('+') + '+',
+                row([lr(' GPU  Name', 'Persistence-M', W[0]), lr(' Bus-Id', 'Disp.A', W[1]), ' Volatile Uncorr. ECC ']),
+                row([lr(' Fan  Temp   Perf', 'Pwr:Usage/Cap', W[0]), lr('', 'Memory-Usage', W[1]), ' GPU-Util  Compute M. ']),
+                '|' + W.map(w => '='.repeat(w)).join('+') + '|',
+                row([lr('   0  Castiel-Brain RTX', 'On', W[0]), lr('   00000000:01:00.0', 'On', W[1]), lr('', 'Off', W[2])]),
+                row([lr(` ${fan}%   ${temp}C    P0`, `${pwr}W /  300W`, W[0]), lr('', `${used}MiB /  16384MiB`, W[1]), lr(`     ${util}%`, 'Default', W[2])]),
+                rule('-'),
+                '',
+                '+' + '-'.repeat(full) + '+',
+                wide(' Processes:'),
+                wide('  GPU     PID   Type   Process name', 'GPU Memory'),
+                '|' + '='.repeat(full) + '|',
+                ...procs.map((p, i) => wide(`    0   ${String(rnd(1000, 99999)).padStart(5)}      ${i < ongoing.length ? 'C' : 'G'}   ${p}`, `${mems[i]}MiB`)),
+                '+' + '-'.repeat(full) + '+',
+            ].join('\n');
+            term.line(esc(table), 'term-out term-block');
+            term.print(`<span class="term-dim">VRAM gets wiped clean on exit — I wrote that part:</span> ${erasureLinks}`);
         },
         clear: () => { term.body.innerHTML = ''; },
         matrix: () => term.print(matrixRain()
@@ -819,8 +953,7 @@ function renderContact(data) {
 
 // Contact line under the name, shown only on paper (the Contact section itself isn't printed)
 function printContactHtml(data) {
-    const site  = new URL(document.querySelector('link[rel="canonical"]')?.href || location.href).hostname;
-    const items = [site, data.email, ...data.links.map(l => l.href.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, ''))];
+    const items = [siteHost(),data.email, ...data.links.map(l => l.href.replace(/^https?:\/\/(www\.)?/, '').replace(/\/$/, ''))];
     return `<p class="print-only print-contact">${items.filter(Boolean).map(esc).join('  ·  ')}</p>`;
 }
 

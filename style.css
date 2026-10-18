@@ -179,6 +179,8 @@ section:first-of-type { padding-top: 10rem; }
     overflow-y: auto;
 }
 .term-body p { white-space: pre-wrap; word-break: break-word; }
+/* Tables and boxes (nvidia-smi, the erasure certificate) keep their columns and scroll sideways instead of wrapping */
+.term-body .term-block { white-space: pre; word-break: normal; overflow-x: auto; scrollbar-width: thin; padding-bottom: 0.2rem; }
 .term-out  { color: var(--muted); margin-bottom: 0.15rem; }
 .term-line { color: var(--text); margin-top: 0.35rem; }
 .term-line:first-child { margin-top: 0; }
@@ -894,8 +896,19 @@ footer {
 /* ── RESPONSIVE ── */
 @media (max-width: 680px) {
     nav { padding: 1rem 1.25rem; gap: 1rem; }
-    .nav-links { gap: 0.9rem; overflow-x: auto; scrollbar-width: none; }
-    .nav-links::-webkit-scrollbar { display: none; }
+    /* Nav links and filter chips scroll sideways on one row. The right edge fades out to hint
+       there's more; the trailing padding is the faded strip, so the last item is fully visible once scrolled to the end */
+    .nav-links, .filter-chips {
+        overflow-x: auto;
+        scrollbar-width: none;
+        padding-right: 1.5rem;
+        -webkit-mask-image: linear-gradient(to left, transparent, #000 1.5rem);
+                mask-image: linear-gradient(to left, transparent, #000 1.5rem);
+    }
+    .nav-links::-webkit-scrollbar, .filter-chips::-webkit-scrollbar { display: none; }
+    .nav-links { gap: 0.9rem; }
+    .filter-chips { flex-wrap: nowrap; align-self: stretch; }
+    .filter-chip { flex-shrink: 0; white-space: nowrap; }
     .nav-links a { font-size: 11px; letter-spacing: 0.04em; white-space: nowrap; }
     .nav-logo span { display: none; }
     .hero-bottom { flex-direction: column; align-items: flex-start; }
@@ -916,6 +929,11 @@ footer {
     .gantt { padding: 0.9rem 0.9rem 0.7rem; }
     .gantt-row, .gantt-axis { grid-template-columns: 78px 1fr; gap: 0.6rem; }
     .gantt-label { font-size: 10.5px; }
+}
+
+/* Phones: two skill columns leave ~140px each, so most items wrap onto two lines */
+@media (max-width: 480px) {
+    .skills-grid { grid-template-columns: 1fr; }
 }
 
 /* Touch screens can't hover: drop the cards so their invisible boxes don't widen the page */
@@ -1002,5 +1020,8 @@ footer {
     .exp-bullets li { font-size: 9pt; line-height: 1.4; break-inside: avoid; }
     .exp-details[open] .exp-bullets { margin-top: 0.3rem; }
     .text-link { border-bottom: 0; }
+    /* A positioned inline paints in a later layer, so the PDF text layer would put the name
+       after the rest of the sentence (copy-paste and résumé parsers read it out of order) */
+    .person-link { position: static; }
     a { color: inherit; }
 }
