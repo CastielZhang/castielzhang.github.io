@@ -1,8 +1,9 @@
 :root {
-    --bg: #121214;
-    --bg2: #161619;
-    --bg3: #1a1a1d;
-    --surface: #1d1d21;
+    --bg: #080c10;
+    --bg2: #0d1117;
+    --bg3: #111820;
+    --surface: #161d26;
+    --grid: rgba(99,202,255,0.03);
     --border: rgba(255,255,255,0.07);
     --border-hover: color-mix(in srgb, var(--accent) 40%, transparent);
     --accent: #c9a54e;
@@ -28,6 +29,19 @@ body {
     font-size: 17px;
     line-height: 1.7;
     overflow-x: hidden;
+}
+
+/* ── GRID NOISE BACKGROUND ── */
+body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image:
+        linear-gradient(var(--grid) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+    z-index: 0;
 }
 
 /* ── NAV ── */
